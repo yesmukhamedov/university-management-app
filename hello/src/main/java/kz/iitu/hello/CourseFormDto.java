@@ -1,29 +1,64 @@
 package kz.iitu.hello;
 
-import jakarta.validation.constraints.*;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.List;
 
-@Getter
-@Setter
 public class CourseFormDto {
-    @NotBlank(message = "Course name is required")
-    @Size(min = 2, max = 150, message = "Course name must be between 2 and 150 characters")
+
+    private Long id;
     private String courseName;
-
-    @NotNull(message = "Credits is required")
-    @Min(value = 1, message = "Credits must be at least 1")
-    @Max(value = 10, message = "Credits cannot exceed 10")
     private Integer credits;
-
-    @NotNull(message = "Max students is required")
-    @Min(value = 1, message = "Max students must be at least 1")
     private Integer maxStudents;
-
-    @NotNull(message = "Teacher must be selected")
     private Long teacherId;
-
     private List<Long> studentIds;
+
+    public CourseFormDto() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
+    public Integer getCredits() {
+        return credits;
+    }
+
+    public void setCredits(Integer credits) {
+        this.credits = credits;
+    }
+
+    public Integer getMaxStudents() {
+        return maxStudents;
+    }
+
+    public void setMaxStudents(Integer maxStudents) {
+        this.maxStudents = maxStudents;
+    }
+
+    public Long getTeacherId() {
+        return teacherId;
+    }
+
+    public void setTeacherId(Long teacherId) {
+        this.teacherId = teacherId;
+    }
+
+    public List<Long> getStudentIds() {
+        return studentIds;
+    }
+
+    public void setStudentIds(List<Long> studentIds) {
+        this.studentIds = studentIds;
+    }
 }

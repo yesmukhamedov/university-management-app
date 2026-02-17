@@ -1,9 +1,7 @@
 package kz.iitu.hello;
-import org.springframework.http.HttpStatus;
 
-public class CourseLimitExceededException extends ApiException {
-
+public class CourseLimitExceededException extends RuntimeException {
     public CourseLimitExceededException(String message) {
-        super(message, HttpStatus.BAD_REQUEST);
+        super(message);
     }
 }

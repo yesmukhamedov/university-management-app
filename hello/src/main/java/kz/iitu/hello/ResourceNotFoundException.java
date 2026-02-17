@@ -1,9 +1,7 @@
 package kz.iitu.hello;
 
-import org.springframework.http.HttpStatus;
-
-public class ResourceNotFoundException extends ApiException {
+public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(String message) {
-        super(message, HttpStatus.NOT_FOUND);
+        super(message);
     }
 }
