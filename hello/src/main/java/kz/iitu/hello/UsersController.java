@@ -81,9 +81,9 @@ public class UsersController {
         } else if (!form.getEmail().contains("@")) {
             bindingResult.rejectValue("email", "email.invalid", "Email must contain @");
         }
-        if (form.getPassword() == null || form.getPassword().isBlank()) {
+        if (currentUserId == null && (form.getPassword() == null || form.getPassword().isBlank())) {
             bindingResult.rejectValue("password", "password.blank", "Password is required");
-        } else if (form.getPassword().length() < 6) {
+        } else if (form.getPassword() != null && !form.getPassword().isBlank() && form.getPassword().length() < 6) {
             bindingResult.rejectValue("password", "password.length", "Password must be at least 6 characters");
         }
         if (form.getRole() == null) {
@@ -96,10 +96,10 @@ public class UsersController {
                 continue;
             }
             if (form.getUserName() != null && form.getUserName().equalsIgnoreCase(existingUser.getUserName())) {
-                throw new DuplicateUserException("User with username '" + form.getUserName() + "' already exists");
+                bindingResult.rejectValue("userName", "userName.duplicate", "User with this username already exists");
             }
             if (form.getEmail() != null && form.getEmail().equalsIgnoreCase(existingUser.getEmail())) {
-                throw new DuplicateUserException("User with email '" + form.getEmail() + "' already exists");
+                bindingResult.rejectValue("email", "email.duplicate", "User with this email already exists");
             }
         }
     }
@@ -112,7 +112,9 @@ public class UsersController {
     private void applyFormToEntity(UserFormDto form, User user) {
         user.setUserName(form.getUserName());
         user.setEmail(form.getEmail());
-        user.setPassword(form.getPassword());
+        if (form.getPassword() != null && !form.getPassword().isBlank()) {
+            user.setPassword(form.getPassword());
+        }
         user.setRole(form.getRole());
     }
 
@@ -121,7 +123,6 @@ public class UsersController {
         dto.setId(user.getId());
         dto.setUserName(user.getUserName());
         dto.setEmail(user.getEmail());
-        dto.setPassword(user.getPassword());
         dto.setRole(user.getRole());
         return dto;
     }
