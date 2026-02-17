@@ -121,7 +121,9 @@ public class StudentsController {
         dto.setAge(student.getAge());
         dto.setGpa(student.getGpa());
         dto.setGroupName(student.getGroupName());
-        dto.setUserId(student.getUser().getId());
+        if (student.getUser() != null) {
+            dto.setUserId(student.getUser().getId());
+        }
         if (student.getCourses() != null) {
             dto.setCourseIds(student.getCourses().stream().map(Course::getId).toList());
         }
@@ -135,7 +137,9 @@ public class StudentsController {
         dto.setAge(student.getAge());
         dto.setGpa(student.getGpa());
         dto.setGroupName(student.getGroupName());
-        dto.setUser(toUserGridDto(student.getUser()));
+        if (student.getUser() != null) {
+            dto.setUser(toUserGridDto(student.getUser()));
+        }
 
         List<CourseGridDto> courseDtos = new ArrayList<>();
         if (student.getCourses() != null) {
@@ -148,6 +152,9 @@ public class StudentsController {
     }
 
     private UserGridDto toUserGridDto(User user) {
+        if (user == null) {
+            return null;
+        }
         UserGridDto dto = new UserGridDto();
         dto.setId(user.getId());
         dto.setUserName(user.getUserName());
@@ -157,6 +164,9 @@ public class StudentsController {
     }
 
     private CourseGridDto toCourseGridDto(Course course) {
+        if (course == null) {
+            return null;
+        }
         CourseGridDto dto = new CourseGridDto();
         dto.setId(course.getId());
         dto.setCourseName(course.getCourseName());

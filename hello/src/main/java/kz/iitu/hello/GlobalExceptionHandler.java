@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(409).body(buildErrorResponse(409, "Conflict", ex.getMessage(), request.getRequestURI(), null));
     }
 
-    @ExceptionHandler({InvalidRoleException.class, CourseLimitExceededException.class, ApiException.class})
+    @ExceptionHandler({InvalidRoleException.class, CourseLimitExceededException.class})
     public ResponseEntity<ErrorResponse> handleBadRequest(RuntimeException ex, HttpServletRequest request) {
         return ResponseEntity.badRequest().body(buildErrorResponse(400, "Bad Request", ex.getMessage(), request.getRequestURI(), null));
     }

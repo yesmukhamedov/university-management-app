@@ -131,6 +131,15 @@ public class CoursesController {
         course.setMaxStudents(form.getMaxStudents());
         course.setTeacher(findTeacher(form.getTeacherId()));
 
+        if (course.getStudents() != null) {
+            for (Student oldStudent : course.getStudents()) {
+                if (oldStudent.getCourses() != null) {
+                    oldStudent.getCourses().remove(course);
+                }
+            }
+            course.getStudents().clear();
+        }
+
         Set<Student> students = new HashSet<>();
         if (form.getStudentIds() != null) {
             students = new HashSet<>(studentsRepository.findAllById(form.getStudentIds()));
@@ -149,7 +158,9 @@ public class CoursesController {
         dto.setCourseName(course.getCourseName());
         dto.setCredits(course.getCredits());
         dto.setMaxStudents(course.getMaxStudents());
-        dto.setTeacherId(course.getTeacher().getId());
+        if (course.getTeacher() != null) {
+            dto.setTeacherId(course.getTeacher().getId());
+        }
         if (course.getStudents() != null) {
             dto.setStudentIds(course.getStudents().stream().map(Student::getId).toList());
         }
@@ -162,7 +173,9 @@ public class CoursesController {
         dto.setCourseName(course.getCourseName());
         dto.setCredits(course.getCredits());
         dto.setMaxStudents(course.getMaxStudents());
-        dto.setTeacher(toTeacherGridDto(course.getTeacher()));
+        if (course.getTeacher() != null) {
+            dto.setTeacher(toTeacherGridDto(course.getTeacher()));
+        }
 
         List<StudentGridDto> students = new ArrayList<>();
         if (course.getStudents() != null) {
@@ -175,6 +188,9 @@ public class CoursesController {
     }
 
     private TeacherGridDto toTeacherGridDto(Teacher teacher) {
+        if (teacher == null) {
+            return null;
+        }
         TeacherGridDto dto = new TeacherGridDto();
         dto.setId(teacher.getId());
         dto.setTeacherName(teacher.getTeacherName());
@@ -184,6 +200,9 @@ public class CoursesController {
     }
 
     private StudentGridDto toStudentGridDto(Student student) {
+        if (student == null) {
+            return null;
+        }
         StudentGridDto dto = new StudentGridDto();
         dto.setId(student.getId());
         dto.setStudentName(student.getStudentName());
