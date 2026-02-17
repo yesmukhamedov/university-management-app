@@ -3,18 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Teachers</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 24px; }
-        h1 { margin-bottom: 16px; }
-        table { border-collapse: collapse; width: 100%; margin-top: 16px; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        th { background: #f5f5f5; }
-        form.inline { display: inline; }
-        .form-row { display: flex; gap: 16px; align-items: center; margin-bottom: 12px; }
-        .form-row label { min-width: 100px; }
-        .form-actions { margin-top: 8px; }
-        .form-actions a { margin-left: 8px; font-size: 0.9em; }
-    </style>
 </head>
 <body>
 
@@ -22,40 +10,48 @@
 
 <h2 th:text="${editMode} ? 'Edit Teacher' : 'Create Teacher'">Create Teacher</h2>
 
-<form th:object="${form}"
-      th:action="${editMode} ? @{/teachers/{id}(id=${form.id})} : @{/teachers}"
-      method="post">
-
+<form th:object="${form}" th:action="${editMode} ? @{/teachers/{id}(id=${form.id})} : @{/teachers}" method="post">
     <input type="hidden" name="_method" value="PUT" th:if="${editMode}"/>
 
-    <div class="form-row">
+    <div>
         <label>Name</label>
-        <input type="text" th:field="*{teacherName}" required/>
+        <input type="text" th:field="*{teacherName}"/>
+        <span th:if="${#fields.hasErrors('teacherName')}" th:errors="*{teacherName}"></span>
     </div>
 
-    <div class="form-row">
+    <div>
+        <label>Experience years</label>
+        <input type="number" th:field="*{experienceYears}"/>
+        <span th:if="${#fields.hasErrors('experienceYears')}" th:errors="*{experienceYears}"></span>
+    </div>
+
+    <div>
+        <label>Department</label>
+        <select th:field="*{department}">
+            <option value="">Select department</option>
+            <option th:each="d : ${departments}" th:value="${d}" th:text="${d}"></option>
+        </select>
+        <span th:if="${#fields.hasErrors('department')}" th:errors="*{department}"></span>
+    </div>
+
+    <div>
         <label>User</label>
-        <select name="userId" required>
-            <option th:each="u : ${users}"
-                    th:value="${u.id}"
-                    th:text="${u.userName}">
-            </option>
+        <select th:field="*{userId}">
+            <option value="">Select user</option>
+            <option th:each="u : ${users}" th:value="${u.id}" th:text="${u.userName}"></option>
         </select>
+        <span th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}"></span>
     </div>
 
-    <div class="form-row">
+    <div>
         <label>Courses</label>
-        <select name="courseIds" multiple size="5">
-            <option th:each="c : ${courses}"
-                    th:value="${c.id}"
-                    th:text="${c.courseName}">
-            </option>
+        <select th:field="*{courseIds}" multiple size="5">
+            <option th:each="c : ${courses}" th:value="${c.id}" th:text="${c.courseName}"></option>
         </select>
     </div>
 
-    <div class="form-actions">
-        <button type="submit"
-                th:text="${editMode} ? 'Update' : 'Create'">Create</button>
+    <div>
+        <button type="submit" th:text="${editMode} ? 'Update' : 'Create'">Create</button>
         <a th:if="${editMode}" th:href="@{/teachers}">Cancel</a>
     </div>
 </form>
@@ -68,35 +64,28 @@
         <th>ID</th>
         <th>Name</th>
         <th>User</th>
+        <th>Department</th>
         <th>Courses</th>
         <th>Delete</th>
     </tr>
     </thead>
     <tbody>
     <tr th:if="${#lists.isEmpty(teachers)}">
-        <td colspan="5">No teachers yet.</td>
+        <td colspan="6">No teachers yet.</td>
     </tr>
     <tr th:each="teacher : ${teachers}">
-        <td>
-            <a th:href="@{/teachers(id=${teacher.id})}"
-               th:text="${teacher.id}">1</a>
-        </td>
+        <td><a th:href="@{/teachers(id=${teacher.id})}" th:text="${teacher.id}">1</a></td>
         <td th:text="${teacher.teacherName}">Teacher Name</td>
         <td th:text="${teacher.user.userName}">username</td>
+        <td th:text="${teacher.department}">IT</td>
         <td>
             <span th:if="${#lists.isEmpty(teacher.courses)}">—</span>
-
-            <ul th:if="${!#lists.isEmpty(teacher.courses)}"
-                style="margin:0; padding-left:16px;">
-                <li th:each="c : ${teacher.courses}"
-                    th:text="${c.courseName}">
-                </li>
+            <ul th:if="${!#lists.isEmpty(teacher.courses)}">
+                <li th:each="c : ${teacher.courses}" th:text="${c.courseName}"></li>
             </ul>
         </td>
         <td>
-            <form class="inline"
-                  th:action="@{/teachers/{id}(id=${teacher.id})}"
-                  method="post">
+            <form th:action="@{/teachers/{id}(id=${teacher.id})}" method="post">
                 <input type="hidden" name="_method" value="DELETE"/>
                 <button type="submit">Delete</button>
             </form>

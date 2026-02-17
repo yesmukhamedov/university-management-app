@@ -1,10 +1,7 @@
 package kz.iitu.hello;
 
-import org.springframework.http.HttpStatus;
-
-public class DuplicateResourceException extends ApiException {
-
+public class DuplicateResourceException extends RuntimeException {
     public DuplicateResourceException(String message) {
-        super(message, HttpStatus.CONFLICT);
+        super(message);
     }
 }

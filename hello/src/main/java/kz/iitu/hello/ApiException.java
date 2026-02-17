@@ -1,16 +1,7 @@
 package kz.iitu.hello;
 
-import org.springframework.http.HttpStatus;
-
-public abstract class ApiException extends RuntimeException {
-    private final HttpStatus status;
-
-    public ApiException(String message, HttpStatus status) {
+public class ApiException extends RuntimeException {
+    public ApiException(String message) {
         super(message);
-        this.status = status;
-    }
-
-    public HttpStatus getStatus() {
-        return status;
     }
 }

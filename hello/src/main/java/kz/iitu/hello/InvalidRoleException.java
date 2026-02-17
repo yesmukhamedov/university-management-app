@@ -1,10 +1,7 @@
 package kz.iitu.hello;
 
-import org.springframework.http.HttpStatus;
-
-public class InvalidRoleException extends ApiException {
-
+public class InvalidRoleException extends RuntimeException {
     public InvalidRoleException(String message) {
-        super(message, HttpStatus.BAD_REQUEST);
+        super(message);
     }
 }

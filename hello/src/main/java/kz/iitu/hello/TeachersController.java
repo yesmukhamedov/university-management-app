@@ -1,13 +1,13 @@
 package kz.iitu.hello;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Controller
 @RequestMapping("/teachers")
@@ -25,72 +25,135 @@ public class TeachersController {
         this.courseRepository = courseRepository;
     }
 
-    // READ + FORM
     @GetMapping
-    public String read(
-            @RequestParam(name = "id", required = false) Long id,
-            Model model
-    ) {
-        Teacher form = (id != null)
-                ? teachersRepository.getById(id)
-                : new Teacher();
-
+    public String read(@RequestParam(name = "id", required = false) Long id, Model model) {
+        TeacherFormDto form = id != null ? toFormDto(findTeacher(id)) : new TeacherFormDto();
         model.addAttribute("editMode", id != null);
         model.addAttribute("form", form);
-        model.addAttribute("teachers", teachersRepository.findAll());
-        model.addAttribute("users", usersRepository.findAll());
-        model.addAttribute("courses", courseRepository.findAll());
-
+        model.addAttribute("teachers", teachersRepository.findAll().stream().map(this::toViewDto).toList());
+        model.addAttribute("users", usersRepository.findAll().stream().map(this::toUserGridDto).toList());
+        model.addAttribute("courses", courseRepository.findAll().stream().map(this::toCourseGridDto).toList());
+        model.addAttribute("departments", Department.values());
         return "teachers";
     }
 
-    // CREATE
     @PostMapping
-    public String create(Teacher teacher,
-    @RequestParam Long userId,
-                         @RequestParam(required = false) List<Long> courseIds) {
-        teacher.setUser(usersRepository.getById(userId));
-
-        if (courseIds != null) {
-            List<Course> courses = new ArrayList<>(courseRepository.findAllById(courseIds));
-            teacher.setCourses(courses);
+    public String create(@Valid @ModelAttribute("form") TeacherFormDto form,
+                         BindingResult bindingResult,
+                         Model model) {
+        if (bindingResult.hasErrors()) {
+            return renderFormWithErrors(model, form, false);
         }
 
+        Teacher teacher = new Teacher();
+        applyFormToEntity(form, teacher);
         teachersRepository.save(teacher);
         return "redirect:/teachers";
     }
 
-    // UPDATE
     @PutMapping("/{id}")
-    public String update(@PathVariable(name = "id") Long id,
-                         Teacher teacherForm,
-                         @RequestParam Long userId,
-                         @RequestParam(required = false) List<Long> courseIds) {
+    public String update(@PathVariable Long id,
+                         @Valid @ModelAttribute("form") TeacherFormDto form,
+                         BindingResult bindingResult,
+                         Model model) {
+        Teacher teacher = findTeacher(id);
+        if (bindingResult.hasErrors()) {
+            form.setId(id);
+            return renderFormWithErrors(model, form, true);
+        }
 
-        Teacher teacherModel = teachersRepository.getById(id);
-        teacherModel.setTeacherName(teacherForm.getTeacherName());
-        teacherModel.setUser(usersRepository.getById(userId));
-
-        List<Course> courses = (courseIds == null)
-                ? new ArrayList<>()
-                : new ArrayList<>(courseRepository.findAllById(courseIds));
-
-        teacherModel.setCourses(courses);
-        teachersRepository.save(teacherModel);
+        applyFormToEntity(form, teacher);
+        teachersRepository.save(teacher);
         return "redirect:/teachers";
     }
 
-    // DELETE
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable(name = "id") Long id) {
-        Teacher teacher = teachersRepository.getById(id);
-
-        for (Course course : teacher.getCourses()) {
-            course.getStudents().remove(teacher);
+    public String delete(@PathVariable Long id) {
+        Teacher teacher = findTeacher(id);
+        if (teacher.getCourses() != null && !teacher.getCourses().isEmpty()) {
+            throw new BusinessException("Cannot delete teacher with assigned courses");
         }
-        teacher.getCourses().clear();
-
         teachersRepository.delete(teacher);
         return "redirect:/teachers";
+    }
+
+    private String renderFormWithErrors(Model model, TeacherFormDto form, boolean editMode) {
+        model.addAttribute("editMode", editMode);
+        model.addAttribute("form", form);
+        model.addAttribute("teachers", teachersRepository.findAll().stream().map(this::toViewDto).toList());
+        model.addAttribute("users", usersRepository.findAll().stream().map(this::toUserGridDto).toList());
+        model.addAttribute("courses", courseRepository.findAll().stream().map(this::toCourseGridDto).toList());
+        model.addAttribute("departments", Department.values());
+        return "teachers";
+    }
+
+    private Teacher findTeacher(Long id) {
+        return teachersRepository.findById(id)
+                .orElseThrow(() -> new TeacherNotFoundException("Teacher not found with id: " + id));
+    }
+
+    private User findUser(Long id) {
+        return usersRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
+    }
+
+    private void applyFormToEntity(TeacherFormDto form, Teacher teacher) {
+        teacher.setTeacherName(form.getTeacherName());
+        teacher.setDepartment(form.getDepartment());
+        teacher.setExperienceYears(form.getExperienceYears());
+        teacher.setUser(findUser(form.getUserId()));
+
+        List<Long> courseIds = form.getCourseIds();
+        List<Course> courses = courseIds == null ? new ArrayList<>() : new ArrayList<>(courseRepository.findAllById(courseIds));
+        teacher.setCourses(courses);
+    }
+
+    private TeacherFormDto toFormDto(Teacher teacher) {
+        TeacherFormDto dto = new TeacherFormDto();
+        dto.setId(teacher.getId());
+        dto.setTeacherName(teacher.getTeacherName());
+        dto.setDepartment(teacher.getDepartment());
+        dto.setExperienceYears(teacher.getExperienceYears());
+        dto.setUserId(teacher.getUser().getId());
+        if (teacher.getCourses() != null) {
+            dto.setCourseIds(teacher.getCourses().stream().map(Course::getId).toList());
+        }
+        return dto;
+    }
+
+    private TeacherViewDto toViewDto(Teacher teacher) {
+        TeacherViewDto dto = new TeacherViewDto();
+        dto.setId(teacher.getId());
+        dto.setTeacherName(teacher.getTeacherName());
+        dto.setDepartment(teacher.getDepartment());
+        dto.setExperienceYears(teacher.getExperienceYears());
+        dto.setUser(toUserGridDto(teacher.getUser()));
+
+        List<CourseGridDto> courses = new ArrayList<>();
+        if (teacher.getCourses() != null) {
+            for (Course course : teacher.getCourses()) {
+                courses.add(toCourseGridDto(course));
+            }
+        }
+        dto.setCourses(courses);
+        return dto;
+    }
+
+    private UserGridDto toUserGridDto(User user) {
+        UserGridDto dto = new UserGridDto();
+        dto.setId(user.getId());
+        dto.setUserName(user.getUserName());
+        dto.setEmail(user.getEmail());
+        dto.setRole(user.getRole());
+        return dto;
+    }
+
+    private CourseGridDto toCourseGridDto(Course course) {
+        CourseGridDto dto = new CourseGridDto();
+        dto.setId(course.getId());
+        dto.setCourseName(course.getCourseName());
+        dto.setCredits(course.getCredits());
+        dto.setMaxStudents(course.getMaxStudents());
+        return dto;
     }
 }
