@@ -1,16 +1,16 @@
 package kz.iitu.hello.service;
 
-import kz.iitu.hello.dto.form.CourseFormDto;
-import kz.iitu.hello.dto.grid.StudentGridDto;
-import kz.iitu.hello.dto.grid.TeacherGridDto;
-import kz.iitu.hello.dto.view.CourseViewDto;
-import kz.iitu.hello.entity.Course;
-import kz.iitu.hello.entity.Student;
-import kz.iitu.hello.entity.Teacher;
+import kz.iitu.hello.web.dto.form.CourseFormDto;
+import kz.iitu.hello.web.dto.grid.StudentGridDto;
+import kz.iitu.hello.web.dto.grid.TeacherGridDto;
+import kz.iitu.hello.web.dto.view.CourseViewDto;
+import kz.iitu.hello.domain.entity.Course;
+import kz.iitu.hello.domain.entity.Student;
+import kz.iitu.hello.domain.entity.Teacher;
 import kz.iitu.hello.exception.EntityNotFoundException;
-import kz.iitu.hello.repository.CoursesRepository;
-import kz.iitu.hello.repository.StudentsRepository;
-import kz.iitu.hello.repository.TeachersRepository;
+import kz.iitu.hello.domain.repository.CoursesRepository;
+import kz.iitu.hello.domain.repository.StudentsRepository;
+import kz.iitu.hello.domain.repository.TeachersRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
