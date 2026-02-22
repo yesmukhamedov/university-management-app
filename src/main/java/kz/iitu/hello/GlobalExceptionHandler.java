@@ -1,6 +1,7 @@
 package kz.iitu.hello;
 
 import jakarta.servlet.http.HttpServletRequest;
+import kz.iitu.hello.exception.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,7 +15,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({UserNotFoundException.class, StudentNotFoundException.class, TeacherNotFoundException.class, CourseNotFoundException.class, ResourceNotFoundException.class})
+    @ExceptionHandler({UserNotFoundException.class, TeacherNotFoundException.class, CourseNotFoundException.class, ResourceNotFoundException.class, EntityNotFoundException.class})
     public ResponseEntity<ErrorResponse> handleNotFound(RuntimeException ex, HttpServletRequest request) {
         return ResponseEntity.status(404).body(buildErrorResponse(404, "Not Found", ex.getMessage(), request.getRequestURI(), null));
     }

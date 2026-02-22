@@ -1,5 +1,6 @@
 package kz.iitu.hello;
 
+import kz.iitu.hello.entity.Student;
 import jakarta.persistence.*;
 
 import java.util.Set;
