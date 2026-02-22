@@ -4,6 +4,8 @@ import kz.iitu.hello.web.dto.form.UserFormDto;
 import kz.iitu.hello.web.dto.grid.UserGridDto;
 import kz.iitu.hello.service.UserService;
 import kz.iitu.hello.web.validations.BindingResultValidationUtils;
+import kz.iitu.hello.web.validations.UserFormValidator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,12 +13,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@RequiredArgsConstructor
 public class UsersRestController {
     private final UserService userService;
+    private final UserFormValidator userFormValidator;
 
-    public UsersRestController(UserService userService) {
-        this.userService = userService;
-    }
 
     @GetMapping
     public List<UserGridDto> read() { return userService.findAllView(); }
@@ -24,7 +25,7 @@ public class UsersRestController {
     @PostMapping
     public void create(@RequestBody UserFormDto form) {
         BeanPropertyBindingResult br = new BeanPropertyBindingResult(form, "form");
-        userService.validateUserForm(form, br, null);
+        userFormValidator.validate(form, br, null);
         BindingResultValidationUtils.validate(br);
         userService.create(form);
     }
@@ -32,7 +33,7 @@ public class UsersRestController {
     @PutMapping("/{id}")
     public void update(@PathVariable Long id, @RequestBody UserFormDto form) {
         BeanPropertyBindingResult br = new BeanPropertyBindingResult(form, "form");
-        userService.validateUserForm(form, br, id);
+        userFormValidator.validate(form, br, id);
         BindingResultValidationUtils.validate(br);
         userService.update(id, form);
     }

@@ -3,18 +3,16 @@ package kz.iitu.hello.web.controller.api;
 import kz.iitu.hello.web.dto.form.StudentFormDto;
 import kz.iitu.hello.web.dto.view.StudentViewDto;
 import kz.iitu.hello.service.StudentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/students")
+@RequiredArgsConstructor
 public class StudentsRestController {
     private final StudentService studentService;
-
-    public StudentsRestController(StudentService studentService) {
-        this.studentService = studentService;
-    }
 
     @GetMapping
     public List<StudentViewDto> read() { return studentService.findAllView(); }
