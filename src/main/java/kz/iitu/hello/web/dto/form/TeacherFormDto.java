@@ -2,12 +2,19 @@ package kz.iitu.hello.web.dto.form;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import jakarta.validation.constraints.NotBlank;
+import kz.iitu.hello.domain.enums.Department;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class TeacherFormDto {
 
     private Long id;
@@ -28,55 +35,4 @@ public class TeacherFormDto {
     private Long userId;
 
     private List<Long> courseIds;
-
-    public TeacherFormDto() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTeacherName() {
-        return teacherName;
-    }
-
-    public void setTeacherName(String teacherName) {
-        this.teacherName = teacherName;
-    }
-
-    public Integer getExperienceYears() {
-        return experienceYears;
-    }
-
-    public void setExperienceYears(Integer experienceYears) {
-        this.experienceYears = experienceYears;
-    }
-
-    public Department getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(Department department) {
-        this.department = department;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public List<Long> getCourseIds() {
-        return courseIds;
-    }
-
-    public void setCourseIds(List<Long> courseIds) {
-        this.courseIds = courseIds;
-    }
 }

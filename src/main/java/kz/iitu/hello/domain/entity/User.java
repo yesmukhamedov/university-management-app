@@ -2,9 +2,17 @@ package kz.iitu.hello.domain.entity;
 
 import jakarta.persistence.*;
 import kz.iitu.hello.domain.enums.UserRole;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,22 +36,4 @@ public class User {
 
     @OneToOne(mappedBy = "user")
     private Teacher teacher;
-
-    public User() {
-    }
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getUserName() { return userName; }
-    public void setUserName(String userName) { this.userName = userName; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
-    public UserRole getRole() { return role; }
-    public void setRole(UserRole role) { this.role = role; }
-    public Student getStudent() { return student; }
-    public void setStudent(Student student) { this.student = student; }
-    public Teacher getTeacher() { return teacher; }
-    public void setTeacher(Teacher teacher) { this.teacher = teacher; }
 }

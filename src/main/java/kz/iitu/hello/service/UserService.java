@@ -5,6 +5,7 @@ import kz.iitu.hello.web.dto.grid.UserGridDto;
 import kz.iitu.hello.domain.entity.User;
 import kz.iitu.hello.exception.EntityNotFoundException;
 import kz.iitu.hello.domain.repository.UsersRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -13,12 +14,9 @@ import java.util.List;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UserService {
     private final UsersRepository usersRepository;
-
-    public UserService(UsersRepository usersRepository) {
-        this.usersRepository = usersRepository;
-    }
 
     public List<UserGridDto> findAllView() {
         return usersRepository.findAll().stream().map(this::toGridDto).toList();

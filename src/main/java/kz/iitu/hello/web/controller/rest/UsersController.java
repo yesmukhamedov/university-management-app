@@ -3,6 +3,7 @@ package kz.iitu.hello.web.controller.rest;
 import kz.iitu.hello.web.dto.form.UserFormDto;
 import kz.iitu.hello.domain.enums.UserRole;
 import kz.iitu.hello.service.UserService;
+import kz.iitu.hello.web.validations.BindingResultValidationUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,7 +30,7 @@ public class UsersController {
     @PostMapping
     public String create(@ModelAttribute("form") UserFormDto form, BindingResult bindingResult, Model model) {
         userService.validateUserForm(form, bindingResult, null);
-        if (bindingResult.hasErrors()) {
+        if (BindingResultValidationUtils.hasErrors(bindingResult)) {
             return renderFormWithErrors(model, form, false);
         }
         userService.create(form);
@@ -39,7 +40,7 @@ public class UsersController {
     @PutMapping("/{id}")
     public String update(@PathVariable Long id, @ModelAttribute("form") UserFormDto form, BindingResult bindingResult, Model model) {
         userService.validateUserForm(form, bindingResult, id);
-        if (bindingResult.hasErrors()) {
+        if (BindingResultValidationUtils.hasErrors(bindingResult)) {
             form.setId(id);
             return renderFormWithErrors(model, form, true);
         }

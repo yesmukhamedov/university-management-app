@@ -1,5 +1,12 @@
 package kz.iitu.hello.web.dto.grid;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class StudentGridDto {
 
     private Long id;
@@ -7,47 +14,4 @@ public class StudentGridDto {
     private Integer age;
     private String groupName;
     private Double gpa;
-
-    public StudentGridDto() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getStudentName() {
-        return studentName;
-    }
-
-    public void setStudentName(String studentName) {
-        this.studentName = studentName;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
-
-    public String getGroupName() {
-        return groupName;
-    }
-
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
-    }
-
-    public Double getGpa() {
-        return gpa;
-    }
-
-    public void setGpa(Double gpa) {
-        this.gpa = gpa;
-    }
 }

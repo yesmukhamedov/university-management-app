@@ -1,7 +1,14 @@
 package kz.iitu.hello.web.dto.form;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CourseFormDto {
 
     private Long id;
@@ -10,55 +17,4 @@ public class CourseFormDto {
     private Integer maxStudents;
     private Long teacherId;
     private List<Long> studentIds;
-
-    public CourseFormDto() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCourseName() {
-        return courseName;
-    }
-
-    public void setCourseName(String courseName) {
-        this.courseName = courseName;
-    }
-
-    public Integer getCredits() {
-        return credits;
-    }
-
-    public void setCredits(Integer credits) {
-        this.credits = credits;
-    }
-
-    public Integer getMaxStudents() {
-        return maxStudents;
-    }
-
-    public void setMaxStudents(Integer maxStudents) {
-        this.maxStudents = maxStudents;
-    }
-
-    public Long getTeacherId() {
-        return teacherId;
-    }
-
-    public void setTeacherId(Long teacherId) {
-        this.teacherId = teacherId;
-    }
-
-    public List<Long> getStudentIds() {
-        return studentIds;
-    }
-
-    public void setStudentIds(List<Long> studentIds) {
-        this.studentIds = studentIds;
-    }
 }

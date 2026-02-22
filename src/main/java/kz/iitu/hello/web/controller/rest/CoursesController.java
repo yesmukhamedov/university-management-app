@@ -2,6 +2,7 @@ package kz.iitu.hello.web.controller.rest;
 
 import kz.iitu.hello.web.dto.form.CourseFormDto;
 import kz.iitu.hello.service.CourseService;
+import kz.iitu.hello.web.validations.BindingResultValidationUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,7 +30,7 @@ public class CoursesController {
     @PostMapping
     public String create(@ModelAttribute("form") CourseFormDto form, BindingResult bindingResult, Model model) {
         courseService.validateCourseForm(form, bindingResult);
-        if (bindingResult.hasErrors()) {
+        if (BindingResultValidationUtils.hasErrors(bindingResult)) {
             return renderFormWithErrors(model, form, false);
         }
         courseService.create(form);
@@ -39,7 +40,7 @@ public class CoursesController {
     @PutMapping("/{id}")
     public String update(@PathVariable Long id, @ModelAttribute("form") CourseFormDto form, BindingResult bindingResult, Model model) {
         courseService.validateCourseForm(form, bindingResult);
-        if (bindingResult.hasErrors()) {
+        if (BindingResultValidationUtils.hasErrors(bindingResult)) {
             form.setId(id);
             return renderFormWithErrors(model, form, true);
         }

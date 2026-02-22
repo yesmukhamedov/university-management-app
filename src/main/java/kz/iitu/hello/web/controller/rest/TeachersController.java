@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import kz.iitu.hello.domain.enums.Department;
 import kz.iitu.hello.web.dto.form.TeacherFormDto;
 import kz.iitu.hello.service.TeacherService;
+import kz.iitu.hello.web.validations.BindingResultValidationUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,7 +32,7 @@ public class TeachersController {
 
     @PostMapping
     public String create(@Valid @ModelAttribute("form") TeacherFormDto form, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) {
+        if (BindingResultValidationUtils.hasErrors(bindingResult)) {
             return renderFormWithErrors(model, form, false);
         }
         teacherService.create(form);
@@ -40,7 +41,7 @@ public class TeachersController {
 
     @PutMapping("/{id}")
     public String update(@PathVariable Long id, @Valid @ModelAttribute("form") TeacherFormDto form, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) {
+        if (BindingResultValidationUtils.hasErrors(bindingResult)) {
             form.setId(id);
             return renderFormWithErrors(model, form, true);
         }

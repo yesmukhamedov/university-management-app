@@ -12,6 +12,7 @@ import kz.iitu.hello.exception.EntityNotFoundException;
 import kz.iitu.hello.domain.repository.CoursesRepository;
 import kz.iitu.hello.domain.repository.TeachersRepository;
 import kz.iitu.hello.domain.repository.UsersRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,16 +21,11 @@ import java.util.List;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class TeacherService {
     private final TeachersRepository teachersRepository;
     private final UsersRepository usersRepository;
     private final CoursesRepository coursesRepository;
-
-    public TeacherService(TeachersRepository teachersRepository, UsersRepository usersRepository, CoursesRepository coursesRepository) {
-        this.teachersRepository = teachersRepository;
-        this.usersRepository = usersRepository;
-        this.coursesRepository = coursesRepository;
-    }
 
     public List<TeacherViewDto> findAllView() { return teachersRepository.findAll().stream().map(this::toViewDto).toList(); }
     public List<UserGridDto> findAllUsers() { return usersRepository.findAll().stream().map(this::toUserGridDto).toList(); }
