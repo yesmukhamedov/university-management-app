@@ -1,5 +1,7 @@
 package kz.iitu.hello;
 
+import kz.iitu.hello.entity.Student;
+import kz.iitu.hello.repository.StudentRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,11 +18,11 @@ public class CoursesController {
 
     private final CoursesRepository coursesRepository;
     private final TeachersRepository teachersRepository;
-    private final StudentsRepository studentsRepository;
+    private final StudentRepository studentsRepository;
 
     public CoursesController(CoursesRepository coursesRepository,
                              TeachersRepository teachersRepository,
-                             StudentsRepository studentsRepository) {
+                             StudentRepository studentsRepository) {
         this.coursesRepository = coursesRepository;
         this.teachersRepository = teachersRepository;
         this.studentsRepository = studentsRepository;
