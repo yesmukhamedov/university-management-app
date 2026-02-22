@@ -1,9 +1,11 @@
 package kz.iitu.hello.web.controller.rest;
 
-import kz.iitu.hello.web.dto.form.UserFormDto;
 import kz.iitu.hello.domain.enums.UserRole;
 import kz.iitu.hello.service.UserService;
+import kz.iitu.hello.web.dto.form.UserFormDto;
 import kz.iitu.hello.web.validations.BindingResultValidationUtils;
+import kz.iitu.hello.web.validations.UserFormValidator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,12 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UsersController {
     private final UserService userService;
-
-    public UsersController(UserService userService) {
-        this.userService = userService;
-    }
+    private final UserFormValidator userFormValidator;
 
     @GetMapping
     public String read(@RequestParam(name = "id", required = false) Long id, Model model) {
@@ -29,7 +29,7 @@ public class UsersController {
 
     @PostMapping
     public String create(@ModelAttribute("form") UserFormDto form, BindingResult bindingResult, Model model) {
-        userService.validateUserForm(form, bindingResult, null);
+        userFormValidator.validate(form, bindingResult, form.getId());
         if (BindingResultValidationUtils.hasErrors(bindingResult)) {
             return renderFormWithErrors(model, form, false);
         }
@@ -39,7 +39,7 @@ public class UsersController {
 
     @PutMapping("/{id}")
     public String update(@PathVariable Long id, @ModelAttribute("form") UserFormDto form, BindingResult bindingResult, Model model) {
-        userService.validateUserForm(form, bindingResult, id);
+        userFormValidator.validate(form, bindingResult, form.getId());
         if (BindingResultValidationUtils.hasErrors(bindingResult)) {
             form.setId(id);
             return renderFormWithErrors(model, form, true);

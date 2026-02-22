@@ -1,8 +1,10 @@
 package kz.iitu.hello.web.controller.rest;
 
-import kz.iitu.hello.web.dto.form.CourseFormDto;
 import kz.iitu.hello.service.CourseService;
+import kz.iitu.hello.web.dto.form.CourseFormDto;
 import kz.iitu.hello.web.validations.BindingResultValidationUtils;
+import kz.iitu.hello.web.validations.CourseFormValidator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -10,12 +12,10 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/courses")
+@RequiredArgsConstructor
 public class CoursesController {
     private final CourseService courseService;
-
-    public CoursesController(CourseService courseService) {
-        this.courseService = courseService;
-    }
+    private final CourseFormValidator courseFormValidator;
 
     @GetMapping
     public String read(@RequestParam(name = "id", required = false) Long id, Model model) {
@@ -29,7 +29,7 @@ public class CoursesController {
 
     @PostMapping
     public String create(@ModelAttribute("form") CourseFormDto form, BindingResult bindingResult, Model model) {
-        courseService.validateCourseForm(form, bindingResult);
+        courseFormValidator.validate(form, bindingResult, form.getId());
         if (BindingResultValidationUtils.hasErrors(bindingResult)) {
             return renderFormWithErrors(model, form, false);
         }
@@ -39,7 +39,7 @@ public class CoursesController {
 
     @PutMapping("/{id}")
     public String update(@PathVariable Long id, @ModelAttribute("form") CourseFormDto form, BindingResult bindingResult, Model model) {
-        courseService.validateCourseForm(form, bindingResult);
+        courseFormValidator.validate(form, bindingResult, form.getId());
         if (BindingResultValidationUtils.hasErrors(bindingResult)) {
             form.setId(id);
             return renderFormWithErrors(model, form, true);
