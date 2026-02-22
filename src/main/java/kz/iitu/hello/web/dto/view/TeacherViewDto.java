@@ -1,7 +1,17 @@
 package kz.iitu.hello.web.dto.view;
 
+import kz.iitu.hello.domain.enums.Department;
+import kz.iitu.hello.web.dto.grid.CourseGridDto;
+import kz.iitu.hello.web.dto.grid.UserGridDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class TeacherViewDto {
 
     private Long id;
@@ -10,55 +20,4 @@ public class TeacherViewDto {
     private Department department;
     private UserGridDto user;
     private List<CourseGridDto> courses;
-
-    public TeacherViewDto() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTeacherName() {
-        return teacherName;
-    }
-
-    public void setTeacherName(String teacherName) {
-        this.teacherName = teacherName;
-    }
-
-    public Integer getExperienceYears() {
-        return experienceYears;
-    }
-
-    public void setExperienceYears(Integer experienceYears) {
-        this.experienceYears = experienceYears;
-    }
-
-    public Department getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(Department department) {
-        this.department = department;
-    }
-
-    public UserGridDto getUser() {
-        return user;
-    }
-
-    public void setUser(UserGridDto user) {
-        this.user = user;
-    }
-
-    public List<CourseGridDto> getCourses() {
-        return courses;
-    }
-
-    public void setCourses(List<CourseGridDto> courses) {
-        this.courses = courses;
-    }
 }

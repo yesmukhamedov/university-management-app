@@ -3,6 +3,7 @@ package kz.iitu.hello.web.controller.api;
 import kz.iitu.hello.web.dto.form.UserFormDto;
 import kz.iitu.hello.web.dto.grid.UserGridDto;
 import kz.iitu.hello.service.UserService;
+import kz.iitu.hello.web.validations.BindingResultValidationUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,9 +25,7 @@ public class UsersRestController {
     public void create(@RequestBody UserFormDto form) {
         BeanPropertyBindingResult br = new BeanPropertyBindingResult(form, "form");
         userService.validateUserForm(form, br, null);
-        if (br.hasErrors()) {
-            throw new IllegalArgumentException(br.getFieldError().getDefaultMessage());
-        }
+        BindingResultValidationUtils.validate(br);
         userService.create(form);
     }
 
@@ -34,9 +33,7 @@ public class UsersRestController {
     public void update(@PathVariable Long id, @RequestBody UserFormDto form) {
         BeanPropertyBindingResult br = new BeanPropertyBindingResult(form, "form");
         userService.validateUserForm(form, br, id);
-        if (br.hasErrors()) {
-            throw new IllegalArgumentException(br.getFieldError().getDefaultMessage());
-        }
+        BindingResultValidationUtils.validate(br);
         userService.update(id, form);
     }
 

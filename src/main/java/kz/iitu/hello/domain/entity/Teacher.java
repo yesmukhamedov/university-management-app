@@ -2,11 +2,19 @@ package kz.iitu.hello.domain.entity;
 
 import jakarta.persistence.*;
 import kz.iitu.hello.domain.enums.Department;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
 @Entity
 @Table(name = "teachers")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Teacher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,20 +36,4 @@ public class Teacher {
 
     @OneToMany(mappedBy = "teacher")
     private List<Course> courses;
-
-    public Teacher() {
-    }
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getTeacherName() { return teacherName; }
-    public void setTeacherName(String teacherName) { this.teacherName = teacherName; }
-    public Integer getExperienceYears() { return experienceYears; }
-    public void setExperienceYears(Integer experienceYears) { this.experienceYears = experienceYears; }
-    public Department getDepartment() { return department; }
-    public void setDepartment(Department department) { this.department = department; }
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
-    public List<Course> getCourses() { return courses; }
-    public void setCourses(List<Course> courses) { this.courses = courses; }
 }
