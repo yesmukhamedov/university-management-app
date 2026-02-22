@@ -1,5 +1,7 @@
 package kz.iitu.hello;
 
+import kz.iitu.hello.exception.EntityNotFoundException;
+
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -14,7 +16,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({UserNotFoundException.class, StudentNotFoundException.class, TeacherNotFoundException.class, CourseNotFoundException.class, ResourceNotFoundException.class})
+    @ExceptionHandler({UserNotFoundException.class, StudentNotFoundException.class, TeacherNotFoundException.class, CourseNotFoundException.class, ResourceNotFoundException.class, EntityNotFoundException.class})
     public ResponseEntity<ErrorResponse> handleNotFound(RuntimeException ex, HttpServletRequest request) {
         return ResponseEntity.status(404).body(buildErrorResponse(404, "Not Found", ex.getMessage(), request.getRequestURI(), null));
     }
@@ -24,7 +26,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(409).body(buildErrorResponse(409, "Conflict", ex.getMessage(), request.getRequestURI(), null));
     }
 
-    @ExceptionHandler({InvalidRoleException.class, CourseLimitExceededException.class})
+    @ExceptionHandler({InvalidRoleException.class, CourseLimitExceededException.class, IllegalArgumentException.class})
     public ResponseEntity<ErrorResponse> handleBadRequest(RuntimeException ex, HttpServletRequest request) {
         return ResponseEntity.badRequest().body(buildErrorResponse(400, "Bad Request", ex.getMessage(), request.getRequestURI(), null));
     }
