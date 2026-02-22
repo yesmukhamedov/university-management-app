@@ -1,6 +1,6 @@
 package kz.iitu.hello.controller.mvc;
 
-import kz.iitu.hello.UserFormDto;
+import kz.iitu.hello.dto.form.UserFormDto;
 import kz.iitu.hello.UserRole;
 import kz.iitu.hello.service.UserService;
 import org.springframework.stereotype.Controller;

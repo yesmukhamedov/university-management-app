@@ -1,13 +1,14 @@
-package kz.iitu.hello;
+package kz.iitu.hello.dto.form;
 
-public class UserGridDto {
+public class UserFormDto {
 
     private Long id;
     private String userName;
     private String email;
+    private String password;
     private UserRole role;
 
-    public UserGridDto() {
+    public UserFormDto() {
     }
 
     public Long getId() {
@@ -32,6 +33,14 @@ public class UserGridDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public UserRole getRole() {

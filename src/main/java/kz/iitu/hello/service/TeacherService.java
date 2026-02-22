@@ -1,7 +1,17 @@
 package kz.iitu.hello.service;
 
-import kz.iitu.hello.*;
+import kz.iitu.hello.BusinessException;
+import kz.iitu.hello.dto.form.TeacherFormDto;
+import kz.iitu.hello.dto.grid.CourseGridDto;
+import kz.iitu.hello.dto.grid.UserGridDto;
+import kz.iitu.hello.dto.view.TeacherViewDto;
+import kz.iitu.hello.entity.Course;
+import kz.iitu.hello.entity.Teacher;
+import kz.iitu.hello.entity.User;
 import kz.iitu.hello.exception.EntityNotFoundException;
+import kz.iitu.hello.repository.CoursesRepository;
+import kz.iitu.hello.repository.TeachersRepository;
+import kz.iitu.hello.repository.UsersRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

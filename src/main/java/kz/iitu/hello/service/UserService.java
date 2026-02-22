@@ -1,7 +1,10 @@
 package kz.iitu.hello.service;
 
-import kz.iitu.hello.*;
+import kz.iitu.hello.dto.form.UserFormDto;
+import kz.iitu.hello.dto.grid.UserGridDto;
+import kz.iitu.hello.entity.User;
 import kz.iitu.hello.exception.EntityNotFoundException;
+import kz.iitu.hello.repository.UsersRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;

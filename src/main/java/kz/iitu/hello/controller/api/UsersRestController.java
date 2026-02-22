@@ -1,7 +1,7 @@
 package kz.iitu.hello.controller.api;
 
-import kz.iitu.hello.UserFormDto;
-import kz.iitu.hello.UserGridDto;
+import kz.iitu.hello.dto.form.UserFormDto;
+import kz.iitu.hello.dto.grid.UserGridDto;
 import kz.iitu.hello.service.UserService;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.web.bind.annotation.*;

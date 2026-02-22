@@ -1,4 +1,4 @@
-package kz.iitu.hello;
+package kz.iitu.hello.dto.view;
 
 import java.util.List;
 

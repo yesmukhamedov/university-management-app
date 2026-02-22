@@ -1,13 +1,17 @@
-package kz.iitu.hello;
+package kz.iitu.hello.dto.form;
 
-public class CourseGridDto {
+import java.util.List;
+
+public class CourseFormDto {
 
     private Long id;
     private String courseName;
     private Integer credits;
     private Integer maxStudents;
+    private Long teacherId;
+    private List<Long> studentIds;
 
-    public CourseGridDto() {
+    public CourseFormDto() {
     }
 
     public Long getId() {
@@ -40,5 +44,21 @@ public class CourseGridDto {
 
     public void setMaxStudents(Integer maxStudents) {
         this.maxStudents = maxStudents;
+    }
+
+    public Long getTeacherId() {
+        return teacherId;
+    }
+
+    public void setTeacherId(Long teacherId) {
+        this.teacherId = teacherId;
+    }
+
+    public List<Long> getStudentIds() {
+        return studentIds;
+    }
+
+    public void setStudentIds(List<Long> studentIds) {
+        this.studentIds = studentIds;
     }
 }

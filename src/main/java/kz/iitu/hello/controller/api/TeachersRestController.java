@@ -1,7 +1,7 @@
 package kz.iitu.hello.controller.api;
 
-import kz.iitu.hello.TeacherFormDto;
-import kz.iitu.hello.TeacherViewDto;
+import kz.iitu.hello.dto.form.TeacherFormDto;
+import kz.iitu.hello.dto.view.TeacherViewDto;
 import kz.iitu.hello.service.TeacherService;
 import org.springframework.web.bind.annotation.*;
 

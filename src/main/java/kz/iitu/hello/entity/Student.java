@@ -1,4 +1,4 @@
-package kz.iitu.hello;
+package kz.iitu.hello.entity;
 
 import jakarta.persistence.*;
 

@@ -1,6 +1,6 @@
 package kz.iitu.hello.controller.mvc;
 
-import kz.iitu.hello.CourseFormDto;
+import kz.iitu.hello.dto.form.CourseFormDto;
 import kz.iitu.hello.service.CourseService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
