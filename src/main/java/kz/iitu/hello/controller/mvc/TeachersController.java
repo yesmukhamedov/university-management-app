@@ -2,7 +2,7 @@ package kz.iitu.hello.controller.mvc;
 
 import jakarta.validation.Valid;
 import kz.iitu.hello.Department;
-import kz.iitu.hello.TeacherFormDto;
+import kz.iitu.hello.dto.form.TeacherFormDto;
 import kz.iitu.hello.service.TeacherService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

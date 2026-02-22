@@ -1,6 +1,7 @@
-package kz.iitu.hello;
+package kz.iitu.hello.entity;
 
 import jakarta.persistence.*;
+import kz.iitu.hello.Department;
 
 import java.util.List;
 

@@ -1,6 +1,7 @@
-package kz.iitu.hello;
+package kz.iitu.hello.entity;
 
 import jakarta.persistence.*;
+import kz.iitu.hello.UserRole;
 
 @Entity
 @Table(name = "users")

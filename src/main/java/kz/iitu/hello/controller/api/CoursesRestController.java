@@ -1,7 +1,7 @@
 package kz.iitu.hello.controller.api;
 
-import kz.iitu.hello.CourseFormDto;
-import kz.iitu.hello.CourseViewDto;
+import kz.iitu.hello.dto.form.CourseFormDto;
+import kz.iitu.hello.dto.view.CourseViewDto;
 import kz.iitu.hello.service.CourseService;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package kz.iitu.hello;
+package kz.iitu.hello.dto.form;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
