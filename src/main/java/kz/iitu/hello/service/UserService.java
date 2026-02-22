@@ -1,78 +1,47 @@
-package kz.iitu.hello;
+package kz.iitu.hello.service;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import kz.iitu.hello.*;
+import kz.iitu.hello.exception.EntityNotFoundException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
-@RequestMapping("/users")
-public class UsersController {
-
+@Service
+@Transactional
+public class UserService {
     private final UsersRepository usersRepository;
 
-    public UsersController(UsersRepository usersRepository) {
+    public UserService(UsersRepository usersRepository) {
         this.usersRepository = usersRepository;
     }
 
-    @GetMapping
-    public String read(@RequestParam(name = "id", required = false) Long id, Model model) {
-        UserFormDto form = id != null ? toFormDto(findUser(id)) : new UserFormDto();
-        model.addAttribute("editMode", id != null);
-        model.addAttribute("form", form);
-        model.addAttribute("users", usersRepository.findAll().stream().map(this::toGridDto).toList());
-        model.addAttribute("roles", UserRole.values());
-        return "users";
+    public List<UserGridDto> findAllView() {
+        return usersRepository.findAll().stream().map(this::toGridDto).toList();
     }
 
-    @PostMapping
-    public String create(@ModelAttribute("form") UserFormDto form, BindingResult bindingResult, Model model) {
-        validateUserForm(form, bindingResult, null);
-        if (bindingResult.hasErrors()) {
-            return renderFormWithErrors(model, form, false);
-        }
+    public UserFormDto getForm(Long id) {
+        return id == null ? new UserFormDto() : toFormDto(findById(id));
+    }
 
+    public void create(UserFormDto form) {
         User user = new User();
         applyFormToEntity(form, user);
         usersRepository.save(user);
-        return "redirect:/users";
     }
 
-    @PutMapping("/{id}")
-    public String update(@PathVariable Long id,
-                         @ModelAttribute("form") UserFormDto form,
-                         BindingResult bindingResult,
-                         Model model) {
-        User user = findUser(id);
-        validateUserForm(form, bindingResult, id);
-        if (bindingResult.hasErrors()) {
-            form.setId(id);
-            return renderFormWithErrors(model, form, true);
-        }
-
+    public void update(Long id, UserFormDto form) {
+        User user = findById(id);
         applyFormToEntity(form, user);
         usersRepository.save(user);
-        return "redirect:/users";
     }
 
-    @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id) {
-        User user = findUser(id);
-        usersRepository.delete(user);
-        return "redirect:/users";
+    public void delete(Long id) {
+        usersRepository.delete(findById(id));
     }
 
-    private String renderFormWithErrors(Model model, UserFormDto form, boolean editMode) {
-        model.addAttribute("editMode", editMode);
-        model.addAttribute("users", usersRepository.findAll().stream().map(this::toGridDto).toList());
-        model.addAttribute("roles", UserRole.values());
-        model.addAttribute("form", form);
-        return "users";
-    }
-
-    private void validateUserForm(UserFormDto form, BindingResult bindingResult, Long currentUserId) {
+    public void validateUserForm(UserFormDto form, BindingResult bindingResult, Long currentUserId) {
         if (form.getUserName() == null || form.getUserName().isBlank()) {
             bindingResult.rejectValue("userName", "userName.blank", "User name is required");
         }
@@ -104,9 +73,9 @@ public class UsersController {
         }
     }
 
-    private User findUser(Long id) {
+    public User findById(Long id) {
         return usersRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
     }
 
     private void applyFormToEntity(UserFormDto form, User user) {
