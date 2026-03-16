@@ -20,7 +20,12 @@ public class CoursesRestController {
 
 
     @GetMapping
-    public List<CourseViewDto> read() { return courseService.findAllView(); }
+    public List<CourseViewDto> read(@RequestParam(required = false) String name,
+                                    @RequestParam(required = false) Integer minCredits,
+                                    @RequestParam(required = false) Integer maxCredits,
+                                    @RequestParam(required = false) Long teacherId) {
+        return courseService.findAllView(name, minCredits, maxCredits, teacherId);
+    }
 
     @PostMapping
     public void create(@RequestBody CourseFormDto form) {

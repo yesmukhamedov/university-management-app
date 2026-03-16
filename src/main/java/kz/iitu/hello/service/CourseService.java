@@ -6,6 +6,7 @@ import kz.iitu.hello.domain.entity.Teacher;
 import kz.iitu.hello.domain.repository.CoursesRepository;
 import kz.iitu.hello.domain.repository.StudentsRepository;
 import kz.iitu.hello.domain.repository.TeachersRepository;
+import kz.iitu.hello.domain.specification.CourseSpecification;
 import kz.iitu.hello.exception.EntityNotFoundException;
 import kz.iitu.hello.web.converter.CourseConverter;
 import kz.iitu.hello.web.dto.form.CourseFormDto;
@@ -13,6 +14,7 @@ import kz.iitu.hello.web.dto.grid.StudentGridDto;
 import kz.iitu.hello.web.dto.grid.TeacherGridDto;
 import kz.iitu.hello.web.dto.view.CourseViewDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +34,16 @@ public class CourseService {
 
     public List<CourseViewDto> findAllView() {
         return coursesRepository.findAll().stream().map(courseConverter::toViewDto).toList();
+    }
+
+    public List<CourseViewDto> findAllView(String name, Integer minCredits, Integer maxCredits, Long teacherId) {
+        return coursesRepository.findAll(
+                        CourseSpecification.withFilters(name, minCredits, maxCredits, teacherId),
+                        Sort.by(Sort.Direction.ASC, "courseName")
+                )
+                .stream()
+                .map(courseConverter::toViewDto)
+                .toList();
     }
 
     public List<TeacherGridDto> findAllTeachers() {

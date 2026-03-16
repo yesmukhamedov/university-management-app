@@ -3,6 +3,7 @@ package kz.iitu.hello.service;
 import kz.iitu.hello.domain.entity.Course;
 import kz.iitu.hello.domain.entity.Student;
 import kz.iitu.hello.domain.entity.User;
+import kz.iitu.hello.domain.mapper.StudentsMyBatisMapper;
 import kz.iitu.hello.domain.repository.CoursesRepository;
 import kz.iitu.hello.domain.repository.StudentsRepository;
 import kz.iitu.hello.domain.repository.UsersRepository;
@@ -27,10 +28,23 @@ public class StudentService {
     private final StudentsRepository studentRepository;
     private final UsersRepository userRepository;
     private final CoursesRepository courseRepository;
+    private final StudentsMyBatisMapper studentsMyBatisMapper;
     private final StudentConverter studentConverter;
 
     public List<StudentViewDto> findAllView() {
         return studentRepository.findAll().stream().map(studentConverter::toViewDto).toList();
+    }
+
+    public List<StudentViewDto> findAllView(String name, Double gpaFrom, Double gpaTo) {
+        List<Long> studentIds = studentsMyBatisMapper.findStudents(name, gpaFrom, gpaTo)
+                .stream()
+                .map(Student::getId)
+                .toList();
+
+        return studentIds.stream()
+                .map(this::findById)
+                .map(studentConverter::toViewDto)
+                .toList();
     }
 
     public List<UserGridDto> findAllUsers() {
