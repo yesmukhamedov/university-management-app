@@ -3,6 +3,7 @@ package kz.iitu.hello.service;
 import kz.iitu.hello.domain.entity.Course;
 import kz.iitu.hello.domain.entity.Teacher;
 import kz.iitu.hello.domain.entity.User;
+import kz.iitu.hello.domain.enums.Department;
 import kz.iitu.hello.domain.repository.CoursesRepository;
 import kz.iitu.hello.domain.repository.TeachersRepository;
 import kz.iitu.hello.domain.repository.UsersRepository;
@@ -31,6 +32,13 @@ public class TeacherService {
 
     public List<TeacherViewDto> findAllView() {
         return teachersRepository.findAll().stream().map(teacherConverter::toViewDto).toList();
+    }
+
+    public List<TeacherViewDto> findAllView(Department department, String name) {
+        return teachersRepository.searchTeachers(department, name)
+                .stream()
+                .map(teacherConverter::toViewDto)
+                .toList();
     }
 
     public List<UserGridDto> findAllUsers() {

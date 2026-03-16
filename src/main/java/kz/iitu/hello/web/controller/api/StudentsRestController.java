@@ -15,7 +15,11 @@ public class StudentsRestController {
     private final StudentService studentService;
 
     @GetMapping
-    public List<StudentViewDto> read() { return studentService.findAllView(); }
+    public List<StudentViewDto> read(@RequestParam(required = false) String name,
+                                     @RequestParam(required = false) Double gpaFrom,
+                                     @RequestParam(required = false) Double gpaTo) {
+        return studentService.findAllView(name, gpaFrom, gpaTo);
+    }
 
     @PostMapping
     public void create(@RequestBody StudentFormDto form) { studentService.create(form); }

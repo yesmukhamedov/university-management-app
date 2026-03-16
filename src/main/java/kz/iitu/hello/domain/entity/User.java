@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "users")
 @Getter
@@ -31,9 +33,19 @@ public class User {
     @Column(nullable = false)
     private UserRole role;
 
+    @Column
+    private LocalDateTime createdAt;
+
     @OneToOne(mappedBy = "user")
     private Student student;
 
     @OneToOne(mappedBy = "user")
     private Teacher teacher;
+
+    @PrePersist
+    public void prePersist() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+    }
 }

@@ -20,7 +20,9 @@ public class UsersRestController {
 
 
     @GetMapping
-    public List<UserGridDto> read() { return userService.findAllView(); }
+    public List<UserGridDto> read(@RequestParam(required = false) String username) {
+        return userService.findAllView(username);
+    }
 
     @PostMapping
     public void create(@RequestBody UserFormDto form) {

@@ -23,6 +23,14 @@ public class UserService {
         return usersRepository.findAll().stream().map(userConverter::toGridDto).toList();
     }
 
+    public List<UserGridDto> findAllView(String username) {
+        String usernameFilter = username == null ? "" : username;
+        return usersRepository.findByUserNameContainingIgnoreCaseOrderByCreatedAtDesc(usernameFilter)
+                .stream()
+                .map(userConverter::toGridDto)
+                .toList();
+    }
+
     public UserFormDto getForm(Long id) {
         return id == null ? new UserFormDto() : userConverter.toFormDto(findById(id));
     }
