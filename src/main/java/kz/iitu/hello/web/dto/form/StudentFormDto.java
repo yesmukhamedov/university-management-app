@@ -35,6 +35,7 @@ public class StudentFormDto {
     private Double gpa;
 
     @NotBlank(message = "Group name is required")
+    @Size(min = 2, max = 30, message = "Group name must be between 2 and 30 characters")
     private String groupName;
 
     @NotNull(message = "User is required")

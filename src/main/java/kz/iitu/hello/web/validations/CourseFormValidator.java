@@ -3,9 +3,21 @@ package kz.iitu.hello.web.validations;
 import kz.iitu.hello.web.dto.form.CourseFormDto;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
 
 @Component
-public class CourseFormValidator {
+public class CourseFormValidator implements Validator {
+
+    @Override
+    public boolean supports(Class<?> clazz) {
+        return CourseFormDto.class.isAssignableFrom(clazz);
+    }
+
+    @Override
+    public void validate(Object target, Errors errors) {
+        validate((CourseFormDto) target, (BindingResult) errors, null);
+    }
 
     public void validate(CourseFormDto form, BindingResult bindingResult, Long currentId) {
         if (form.getCourseName() == null || form.getCourseName().isBlank()) {

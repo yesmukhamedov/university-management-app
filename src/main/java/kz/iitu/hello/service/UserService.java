@@ -28,6 +28,7 @@ public class UserService {
     private final UsersRepository usersRepository;
     private final UserConverter userConverter;
 
+    @Transactional(readOnly = true)
     public Page<UserGridDto> search(UserSearchForm form, Pageable pageable) {
         String userNameFilter = form.getUsername() == null ? "" : form.getUsername();
         String emailFilter = form.getEmail() == null ? "" : form.getEmail();
@@ -43,6 +44,7 @@ public class UserService {
                 .map(userConverter::toGridDto);
     }
 
+    @Transactional(readOnly = true)
     public UserFormDto getForm(Long id) {
         return id == null ? new UserFormDto() : userConverter.toFormDto(findById(id));
     }
@@ -63,6 +65,7 @@ public class UserService {
         usersRepository.delete(findById(id));
     }
 
+    @Transactional(readOnly = true)
     public User findById(Long id) {
         return usersRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));

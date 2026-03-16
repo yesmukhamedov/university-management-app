@@ -39,6 +39,7 @@ public class TeacherService {
     private final CoursesRepository coursesRepository;
     private final TeacherConverter teacherConverter;
 
+    @Transactional(readOnly = true)
     public Page<TeacherViewDto> search(TeacherSearchForm form, Pageable pageable) {
         Sort.Direction direction = form.getSortDirection() == null ? Sort.Direction.ASC : form.getSortDirection();
         String requestedSortBy = form.getSortBy() == null ? DEFAULT_SORT : form.getSortBy();
@@ -50,14 +51,17 @@ public class TeacherService {
                 .map(teacherConverter::toViewDto);
     }
 
+    @Transactional(readOnly = true)
     public List<UserGridDto> findAllUsers() {
         return usersRepository.findAll().stream().map(teacherConverter::toUserGridDto).toList();
     }
 
+    @Transactional(readOnly = true)
     public List<CourseGridDto> findAllCourses() {
         return coursesRepository.findAll().stream().map(teacherConverter::toCourseGridDto).toList();
     }
 
+    @Transactional(readOnly = true)
     public TeacherFormDto getForm(Long id) {
         return id == null ? new TeacherFormDto() : teacherConverter.toFormDto(findById(id));
     }
@@ -82,6 +86,7 @@ public class TeacherService {
         teachersRepository.delete(teacher);
     }
 
+    @Transactional(readOnly = true)
     public Teacher findById(Long id) {
         return teachersRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Teacher not found with id: " + id));
     }
