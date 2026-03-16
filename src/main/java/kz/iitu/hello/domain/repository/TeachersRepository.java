@@ -14,7 +14,7 @@ public interface TeachersRepository extends JpaRepository<Teacher, Long> {
     @Query("""
             SELECT t FROM Teacher t
             WHERE (:department IS NULL OR t.department = :department)
-              AND (:name IS NULL OR LOWER(t.teacherName) LIKE LOWER(CONCAT('%', :name, '%')))
+              AND (:name IS NULL OR LOWER(t.teacherName) LIKE CONCAT('%', LOWER(CAST(:name as string)), '%'))
             """)
     Page<Teacher> searchTeachers(@Param("department") Department department,
                                  @Param("name") String name,
