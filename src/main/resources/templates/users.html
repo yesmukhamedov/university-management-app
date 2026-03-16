@@ -107,8 +107,8 @@
     </tbody>
 </table>
 
-<a th:if="${page.hasPrevious()}" th:href="@{?page=${page.number-1}}">Previous</a>
+<a th:if="${page.hasPrevious()}" th:href="@{/users(page=${page.number-1})}">Previous</a>
 <span th:text="${page.number + 1}"></span>
-<a th:if="${page.hasNext()}" th:href="@{?page=${page.number+1}}">Next</a>
+<a th:if="${page.hasNext()}" th:href="@{/users(page=${page.number+1})}">Next</a>
 </body>
 </html>
