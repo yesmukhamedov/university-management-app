@@ -13,18 +13,27 @@ import kz.iitu.hello.web.converter.TeacherConverter;
 import kz.iitu.hello.web.dto.form.TeacherFormDto;
 import kz.iitu.hello.web.dto.grid.CourseGridDto;
 import kz.iitu.hello.web.dto.grid.UserGridDto;
+import kz.iitu.hello.web.dto.search.TeacherSearchForm;
 import kz.iitu.hello.web.dto.view.TeacherViewDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class TeacherService {
+    private static final String DEFAULT_SORT = "teacherName";
+    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of("id", "teacherName", "experienceYears", "department");
+
     private final TeachersRepository teachersRepository;
     private final UsersRepository usersRepository;
     private final CoursesRepository coursesRepository;
@@ -35,10 +44,22 @@ public class TeacherService {
     }
 
     public List<TeacherViewDto> findAllView(Department department, String name) {
-        return teachersRepository.searchTeachers(department, name)
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE, Sort.by(Sort.Direction.ASC, DEFAULT_SORT));
+        return teachersRepository.searchTeachers(department, name, pageable)
                 .stream()
                 .map(teacherConverter::toViewDto)
                 .toList();
+    }
+
+    public Page<TeacherViewDto> search(TeacherSearchForm form, Pageable pageable) {
+        Sort.Direction direction = form.getSortDirection() == null ? Sort.Direction.ASC : form.getSortDirection();
+        String requestedSortBy = form.getSortBy() == null ? DEFAULT_SORT : form.getSortBy();
+        String sortBy = ALLOWED_SORT_FIELDS.contains(requestedSortBy) ? requestedSortBy : DEFAULT_SORT;
+
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(direction, sortBy));
+
+        return teachersRepository.searchTeachers(form.getDepartment(), form.getName(), sortedPageable)
+                .map(teacherConverter::toViewDto);
     }
 
     public List<UserGridDto> findAllUsers() {

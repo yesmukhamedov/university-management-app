@@ -12,21 +12,27 @@ import kz.iitu.hello.web.converter.CourseConverter;
 import kz.iitu.hello.web.dto.form.CourseFormDto;
 import kz.iitu.hello.web.dto.grid.StudentGridDto;
 import kz.iitu.hello.web.dto.grid.TeacherGridDto;
+import kz.iitu.hello.web.dto.search.CourseSearchForm;
 import kz.iitu.hello.web.dto.view.CourseViewDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
-import java.util.Set;
-
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class CourseService {
+    private static final String DEFAULT_SORT = "courseName";
+    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of("id", "courseName", "credits", "maxStudents");
+
     private final CoursesRepository coursesRepository;
     private final TeachersRepository teachersRepository;
     private final StudentsRepository studentsRepository;
@@ -37,13 +43,24 @@ public class CourseService {
     }
 
     public List<CourseViewDto> findAllView(String name, Integer minCredits, Integer maxCredits, Long teacherId) {
-        return coursesRepository.findAll(
-                        CourseSpecification.withFilters(name, minCredits, maxCredits, teacherId),
-                        Sort.by(Sort.Direction.ASC, "courseName")
-                )
-                .stream()
-                .map(courseConverter::toViewDto)
-                .toList();
+        CourseSearchForm form = new CourseSearchForm();
+        form.setCourseName(name);
+        form.setCreditsFrom(minCredits);
+        form.setCreditsTo(maxCredits);
+        form.setTeacherId(teacherId);
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE, Sort.by(Sort.Direction.ASC, DEFAULT_SORT));
+        return search(form, pageable).getContent();
+    }
+
+    public Page<CourseViewDto> search(CourseSearchForm form, Pageable pageable) {
+        Sort.Direction direction = form.getSortDirection() == null ? Sort.Direction.ASC : form.getSortDirection();
+        String requestedSortBy = form.getSortBy() == null ? DEFAULT_SORT : form.getSortBy();
+        String sortBy = ALLOWED_SORT_FIELDS.contains(requestedSortBy) ? requestedSortBy : DEFAULT_SORT;
+
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(direction, sortBy));
+
+        return coursesRepository.findAll(CourseSpecification.withFilters(form), sortedPageable)
+                .map(courseConverter::toViewDto);
     }
 
     public List<TeacherGridDto> findAllTeachers() {

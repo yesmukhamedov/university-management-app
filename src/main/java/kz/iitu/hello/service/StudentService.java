@@ -12,19 +12,34 @@ import kz.iitu.hello.web.converter.StudentConverter;
 import kz.iitu.hello.web.dto.form.StudentFormDto;
 import kz.iitu.hello.web.dto.grid.CourseGridDto;
 import kz.iitu.hello.web.dto.grid.UserGridDto;
+import kz.iitu.hello.web.dto.search.StudentSearchForm;
 import kz.iitu.hello.web.dto.view.StudentViewDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class StudentService {
+    private static final String DEFAULT_SORT = "studentName";
+    private static final Map<String, String> SORT_COLUMN_MAPPING = Map.of(
+            "id", "id",
+            "studentName", "student_name",
+            "age", "age",
+            "groupName", "group_name",
+            "gpa", "gpa"
+    );
+
     private final StudentsRepository studentRepository;
     private final UsersRepository userRepository;
     private final CoursesRepository courseRepository;
@@ -36,7 +51,7 @@ public class StudentService {
     }
 
     public List<StudentViewDto> findAllView(String name, Double gpaFrom, Double gpaTo) {
-        List<Long> studentIds = studentsMyBatisMapper.findStudents(name, gpaFrom, gpaTo)
+        List<Long> studentIds = studentsMyBatisMapper.findStudents(name, null, null, null, gpaFrom, gpaTo, "gpa", "DESC", Integer.MAX_VALUE, 0)
                 .stream()
                 .map(Student::getId)
                 .toList();
@@ -45,6 +60,37 @@ public class StudentService {
                 .map(this::findById)
                 .map(studentConverter::toViewDto)
                 .toList();
+    }
+
+    public Page<StudentViewDto> search(StudentSearchForm form, Pageable pageable) {
+        String requestedSortBy = form.getSortBy() == null ? DEFAULT_SORT : form.getSortBy();
+        String sortBy = SORT_COLUMN_MAPPING.getOrDefault(requestedSortBy, SORT_COLUMN_MAPPING.get(DEFAULT_SORT));
+        Sort.Direction direction = form.getSortDirection() == null ? Sort.Direction.ASC : form.getSortDirection();
+
+        List<Student> students = studentsMyBatisMapper.findStudents(
+                form.getName(),
+                form.getGroupName(),
+                form.getAgeFrom(),
+                form.getAgeTo(),
+                form.getGpaFrom(),
+                form.getGpaTo(),
+                sortBy,
+                direction.name(),
+                pageable.getPageSize(),
+                pageable.getOffset()
+        );
+
+        long total = studentsMyBatisMapper.countStudents(
+                form.getName(),
+                form.getGroupName(),
+                form.getAgeFrom(),
+                form.getAgeTo(),
+                form.getGpaFrom(),
+                form.getGpaTo()
+        );
+
+        return new PageImpl<>(students, pageable, total)
+                .map(studentConverter::toViewDto);
     }
 
     public List<UserGridDto> findAllUsers() {

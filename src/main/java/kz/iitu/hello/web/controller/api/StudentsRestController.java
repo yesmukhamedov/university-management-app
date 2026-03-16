@@ -1,12 +1,14 @@
 package kz.iitu.hello.web.controller.api;
 
-import kz.iitu.hello.web.dto.form.StudentFormDto;
-import kz.iitu.hello.web.dto.view.StudentViewDto;
 import kz.iitu.hello.service.StudentService;
+import kz.iitu.hello.web.dto.form.StudentFormDto;
+import kz.iitu.hello.web.dto.search.StudentSearchForm;
+import kz.iitu.hello.web.dto.view.StudentViewDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/students")
@@ -15,18 +17,23 @@ public class StudentsRestController {
     private final StudentService studentService;
 
     @GetMapping
-    public List<StudentViewDto> read(@RequestParam(required = false) String name,
-                                     @RequestParam(required = false) Double gpaFrom,
-                                     @RequestParam(required = false) Double gpaTo) {
-        return studentService.findAllView(name, gpaFrom, gpaTo);
+    public Page<StudentViewDto> read(StudentSearchForm form,
+                                     @PageableDefault(size = 10) Pageable pageable) {
+        return studentService.search(form, pageable);
     }
 
     @PostMapping
-    public void create(@RequestBody StudentFormDto form) { studentService.create(form); }
+    public void create(@RequestBody StudentFormDto form) {
+        studentService.create(form);
+    }
 
     @PutMapping("/{id}")
-    public void update(@PathVariable Long id, @RequestBody StudentFormDto form) { studentService.update(id, form); }
+    public void update(@PathVariable Long id, @RequestBody StudentFormDto form) {
+        studentService.update(id, form);
+    }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) { studentService.delete(id); }
+    public void delete(@PathVariable Long id) {
+        studentService.delete(id);
+    }
 }
