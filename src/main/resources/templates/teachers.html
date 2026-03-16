@@ -22,23 +22,29 @@
 <h1>Teachers</h1>
 
 <form method="get" th:object="${searchForm}">
-    <input type="text" th:field="*{name}" placeholder="Name">
-    <select th:field="*{department}">
+    <label for="name">Name</label>
+    <input id="name" type="text" th:field="*{name}" placeholder="Name">
+    <label for="department">Department</label>
+    <select id="department" th:field="*{department}">
         <option value="">All</option>
         <option th:each="d : ${T(kz.iitu.hello.domain.enums.Department).values()}"
                 th:value="${d}"
                 th:text="${d}">
         </option>
     </select>
-    <input type="number" th:field="*{experienceYearsFrom}" placeholder="Experience from">
-    <input type="number" th:field="*{experienceYearsTo}" placeholder="Experience to">
-    <select th:field="*{sortBy}">
+    <label for="experienceYearsFrom">Experience from</label>
+    <input id="experienceYearsFrom" type="number" th:field="*{experienceYearsFrom}" placeholder="Experience from">
+    <label for="experienceYearsTo">Experience to</label>
+    <input id="experienceYearsTo" type="number" th:field="*{experienceYearsTo}" placeholder="Experience to">
+    <label for="sortBy">Sort by</label>
+    <select id="sortBy" th:field="*{sortBy}">
         <option value="id">ID</option>
         <option value="teacherName">Name</option>
         <option value="experienceYears">Experience</option>
         <option value="department">Department</option>
     </select>
-    <select th:field="*{sortDirection}">
+    <label for="sortDirection">Sort direction</label>
+    <select id="sortDirection" th:field="*{sortDirection}">
         <option value="ASC">ASC</option>
         <option value="DESC">DESC</option>
     </select>

@@ -22,25 +22,33 @@
 <h1>Courses</h1>
 
 <form method="get" th:object="${searchForm}">
-    <input type="text" th:field="*{courseName}" placeholder="Course name">
-    <input type="number" th:field="*{creditsFrom}" placeholder="Credits from">
-    <input type="number" th:field="*{creditsTo}" placeholder="Credits to">
-    <input type="number" th:field="*{maxStudentsFrom}" placeholder="Max students from">
-    <input type="number" th:field="*{maxStudentsTo}" placeholder="Max students to">
-    <select th:field="*{teacherId}">
+    <label for="courseName">Course name</label>
+    <input id="courseName" type="text" th:field="*{courseName}" placeholder="Course name">
+    <label for="creditsFrom">Credits from</label>
+    <input id="creditsFrom" type="number" th:field="*{creditsFrom}" placeholder="Credits from">
+    <label for="creditsTo">Credits to</label>
+    <input id="creditsTo" type="number" th:field="*{creditsTo}" placeholder="Credits to">
+    <label for="maxStudentsFrom">Max students from</label>
+    <input id="maxStudentsFrom" type="number" th:field="*{maxStudentsFrom}" placeholder="Max students from">
+    <label for="maxStudentsTo">Max students to</label>
+    <input id="maxStudentsTo" type="number" th:field="*{maxStudentsTo}" placeholder="Max students to">
+    <label for="teacherId">Teacher</label>
+    <select id="teacherId" th:field="*{teacherId}">
         <option value="">All</option>
         <option th:each="t : ${teachers}"
                 th:value="${t.id}"
                 th:text="${t.teacherName}">
         </option>
     </select>
-    <select th:field="*{sortBy}">
+    <label for="sortBy">Sort by</label>
+    <select id="sortBy" th:field="*{sortBy}">
         <option value="id">ID</option>
         <option value="courseName">Course name</option>
         <option value="credits">Credits</option>
         <option value="maxStudents">Max students</option>
     </select>
-    <select th:field="*{sortDirection}">
+    <label for="sortDirection">Sort direction</label>
+    <select id="sortDirection" th:field="*{sortDirection}">
         <option value="ASC">ASC</option>
         <option value="DESC">DESC</option>
     </select>

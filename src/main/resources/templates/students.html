@@ -22,20 +22,28 @@
 <h1>Students</h1>
 
 <form method="get" th:object="${searchForm}">
-    <input type="text" th:field="*{name}" placeholder="Name">
-    <input type="text" th:field="*{groupName}" placeholder="Group name">
-    <input type="number" th:field="*{ageFrom}" placeholder="Age from">
-    <input type="number" th:field="*{ageTo}" placeholder="Age to">
-    <input type="number" step="0.01" th:field="*{gpaFrom}" placeholder="GPA from">
-    <input type="number" step="0.01" th:field="*{gpaTo}" placeholder="GPA to">
-    <select th:field="*{sortBy}">
+    <label for="name">Name</label>
+    <input id="name" type="text" th:field="*{name}" placeholder="Name">
+    <label for="groupName">Group name</label>
+    <input id="groupName" type="text" th:field="*{groupName}" placeholder="Group name">
+    <label for="ageFrom">Age from</label>
+    <input id="ageFrom" type="number" th:field="*{ageFrom}" placeholder="Age from">
+    <label for="ageTo">Age to</label>
+    <input id="ageTo" type="number" th:field="*{ageTo}" placeholder="Age to">
+    <label for="gpaFrom">GPA from</label>
+    <input id="gpaFrom" type="number" step="0.01" th:field="*{gpaFrom}" placeholder="GPA from">
+    <label for="gpaTo">GPA to</label>
+    <input id="gpaTo" type="number" step="0.01" th:field="*{gpaTo}" placeholder="GPA to">
+    <label for="sortBy">Sort by</label>
+    <select id="sortBy" th:field="*{sortBy}">
         <option value="id">ID</option>
         <option value="studentName">Name</option>
         <option value="age">Age</option>
         <option value="groupName">Group</option>
         <option value="gpa">GPA</option>
     </select>
-    <select th:field="*{sortDirection}">
+    <label for="sortDirection">Sort direction</label>
+    <select id="sortDirection" th:field="*{sortDirection}">
         <option value="ASC">ASC</option>
         <option value="DESC">DESC</option>
     </select>

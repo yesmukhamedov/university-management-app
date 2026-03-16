@@ -21,15 +21,19 @@
 <h1>Users</h1>
 
 <form method="get" th:object="${searchForm}">
-    <input type="text" th:field="*{username}" placeholder="Username">
-    <input type="text" th:field="*{email}" placeholder="Email">
-    <select th:field="*{sortBy}">
+    <label for="username">Username</label>
+    <input id="username" type="text" th:field="*{username}" placeholder="Username">
+    <label for="email">Email</label>
+    <input id="email" type="text" th:field="*{email}" placeholder="Email">
+    <label for="sortBy">Sort by</label>
+    <select id="sortBy" th:field="*{sortBy}">
         <option value="id">ID</option>
         <option value="userName">Username</option>
         <option value="email">Email</option>
         <option value="createdAt">Created At</option>
     </select>
-    <select th:field="*{sortDirection}">
+    <label for="sortDirection">Sort direction</label>
+    <select id="sortDirection" th:field="*{sortDirection}">
         <option value="ASC">ASC</option>
         <option value="DESC">DESC</option>
     </select>
