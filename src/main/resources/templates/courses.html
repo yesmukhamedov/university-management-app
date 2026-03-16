@@ -100,6 +100,9 @@
         <th>ID</th>
         <th>Course</th>
         <th>Teacher</th>
+        <th>Credits</th>
+        <th>Max Students</th>
+        <th>Students Count</th>
         <th>Students</th>
         <th>Delete</th>
     </tr>
@@ -107,13 +110,16 @@
 
     <tbody>
     <tr th:if="${#lists.isEmpty(page.content)}">
-        <td colspan="5">No courses yet.</td>
+        <td colspan="8">No courses yet.</td>
     </tr>
 
     <tr th:each="course : ${page.content}">
         <td><a th:href="@{/manage/courses(id=${course.id})}" th:text="${course.id}">1</a></td>
         <td th:text="${course.courseName}">Course</td>
         <td th:text="${course.teacher.teacherName}">Teacher</td>
+        <td th:text="${course.credits}">0</td>
+        <td th:text="${course.maxStudents}">0</td>
+        <td th:text="${#lists.size(course.students)}">0</td>
         <td>
             <span th:if="${#lists.isEmpty(course.students)}">—</span>
             <ul th:if="${!#lists.isEmpty(course.students)}">
