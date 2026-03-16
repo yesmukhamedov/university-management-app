@@ -121,7 +121,7 @@
         <td th:text="${student.age}">0</td>
         <td th:text="${student.groupName}">Group</td>
         <td th:text="${student.gpa}">0.0</td>
-        <td th:text="${student.user.userName}">User</td>
+        <td th:text="${student.user != null ? student.user.userName : '-'}">User</td>
         <td th:text="${#lists.size(student.courses)}">0</td>
         <td>
             <span th:if="${#lists.isEmpty(student.courses)}">—</span>
