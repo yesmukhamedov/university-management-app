@@ -25,6 +25,15 @@
     <input id="username" type="text" th:field="*{username}" placeholder="Username">
     <label for="email">Email</label>
     <input id="email" type="text" th:field="*{email}" placeholder="Email">
+    <label for="searchRole">Role</label>
+    <select id="searchRole" th:field="*{role}">
+        <option value="">All roles</option>
+        <option th:each="role : ${T(kz.iitu.hello.domain.enums.UserRole).values()}"
+                th:value="${role}"
+                th:text="${role}"
+                th:selected="${searchForm.role == role}">
+        </option>
+    </select>
     <label for="sortBy">Sort by</label>
     <select id="sortBy" th:field="*{sortBy}">
         <option value="id">ID</option>
@@ -107,8 +116,8 @@
     </tbody>
 </table>
 
-<a th:if="${page.hasPrevious()}" th:href="@{/users(page=${page.number-1})}">Previous</a>
+<a th:if="${page.hasPrevious()}" th:href="@{/users(page=${page.number-1},username=${searchForm.username},email=${searchForm.email},role=${searchForm.role},sortBy=${searchForm.sortBy},sortDirection=${searchForm.sortDirection})}">Previous</a>
 <span th:text="${page.number + 1}"></span>
-<a th:if="${page.hasNext()}" th:href="@{/users(page=${page.number+1})}">Next</a>
+<a th:if="${page.hasNext()}" th:href="@{/users(page=${page.number+1},username=${searchForm.username},email=${searchForm.email},role=${searchForm.role},sortBy=${searchForm.sortBy},sortDirection=${searchForm.sortDirection})}">Next</a>
 </body>
 </html>
