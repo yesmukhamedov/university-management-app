@@ -1,15 +1,17 @@
 package kz.iitu.hello.web.controller.api;
 
+import kz.iitu.hello.service.UserService;
 import kz.iitu.hello.web.dto.form.UserFormDto;
 import kz.iitu.hello.web.dto.grid.UserGridDto;
-import kz.iitu.hello.service.UserService;
+import kz.iitu.hello.web.dto.search.UserSearchForm;
 import kz.iitu.hello.web.validations.BindingResultValidationUtils;
 import kz.iitu.hello.web.validations.UserFormValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -18,10 +20,10 @@ public class UsersRestController {
     private final UserService userService;
     private final UserFormValidator userFormValidator;
 
-
     @GetMapping
-    public List<UserGridDto> read(@RequestParam(required = false) String username) {
-        return userService.findAllView(username);
+    public Page<UserGridDto> read(UserSearchForm searchForm,
+                                  @PageableDefault(size = 10) Pageable pageable) {
+        return userService.search(searchForm, pageable);
     }
 
     @PostMapping
@@ -41,5 +43,7 @@ public class UsersRestController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) { userService.delete(id); }
+    public void delete(@PathVariable Long id) {
+        userService.delete(id);
+    }
 }
