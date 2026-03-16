@@ -21,9 +21,33 @@
 
 <h1>Teachers</h1>
 
+<form method="get" th:object="${searchForm}">
+    <input type="text" th:field="*{name}" placeholder="Name">
+    <select th:field="*{department}">
+        <option value="">All</option>
+        <option th:each="d : ${T(kz.iitu.hello.domain.enums.Department).values()}"
+                th:value="${d}"
+                th:text="${d}">
+        </option>
+    </select>
+    <input type="number" th:field="*{experienceYearsFrom}" placeholder="Experience from">
+    <input type="number" th:field="*{experienceYearsTo}" placeholder="Experience to">
+    <select th:field="*{sortBy}">
+        <option value="id">ID</option>
+        <option value="teacherName">Name</option>
+        <option value="experienceYears">Experience</option>
+        <option value="department">Department</option>
+    </select>
+    <select th:field="*{sortDirection}">
+        <option value="ASC">ASC</option>
+        <option value="DESC">DESC</option>
+    </select>
+    <button type="submit">Filter</button>
+</form>
+
 <h2 th:text="${editMode} ? 'Edit Teacher' : 'Create Teacher'">Create Teacher</h2>
 
-<form th:object="${form}" th:action="${editMode} ? @{/teachers/{id}(id=${form.id})} : @{/teachers}" method="post">
+<form th:object="${form}" th:action="${editMode} ? @{/manage/teachers/{id}(id=${form.id})} : @{/manage/teachers}" method="post">
     <input type="hidden" name="_method" value="PUT" th:if="${editMode}"/>
 
     <div>
@@ -65,7 +89,7 @@
 
     <div>
         <button type="submit" th:text="${editMode} ? 'Update' : 'Create'">Create</button>
-        <a th:if="${editMode}" th:href="@{/teachers}">Cancel</a>
+        <a th:if="${editMode}" th:href="@{/manage/teachers}">Cancel</a>
     </div>
 </form>
 
@@ -83,11 +107,11 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:if="${#lists.isEmpty(teachers)}">
+    <tr th:if="${#lists.isEmpty(page.content)}">
         <td colspan="6">No teachers yet.</td>
     </tr>
-    <tr th:each="teacher : ${teachers}">
-        <td><a th:href="@{/teachers(id=${teacher.id})}" th:text="${teacher.id}">1</a></td>
+    <tr th:each="teacher : ${page.content}">
+        <td><a th:href="@{/manage/teachers(id=${teacher.id})}" th:text="${teacher.id}">1</a></td>
         <td th:text="${teacher.teacherName}">Teacher Name</td>
         <td th:text="${teacher.user.userName}">username</td>
         <td th:text="${teacher.department}">IT</td>
@@ -98,7 +122,7 @@
             </ul>
         </td>
         <td>
-            <form th:action="@{/teachers/{id}(id=${teacher.id})}" method="post">
+            <form th:action="@{/manage/teachers/{id}(id=${teacher.id})}" method="post">
                 <input type="hidden" name="_method" value="DELETE"/>
                 <button type="submit">Delete</button>
             </form>
@@ -106,6 +130,10 @@
     </tr>
     </tbody>
 </table>
+
+<a th:if="${page.hasPrevious()}" th:href="@{?page=${page.number-1}}">Previous</a>
+<span th:text="${page.number + 1}"></span>
+<a th:if="${page.hasNext()}" th:href="@{?page=${page.number+1}}">Next</a>
 
 </body>
 </html>

@@ -21,9 +21,35 @@
 
 <h1>Courses</h1>
 
+<form method="get" th:object="${searchForm}">
+    <input type="text" th:field="*{courseName}" placeholder="Course name">
+    <input type="number" th:field="*{creditsFrom}" placeholder="Credits from">
+    <input type="number" th:field="*{creditsTo}" placeholder="Credits to">
+    <input type="number" th:field="*{maxStudentsFrom}" placeholder="Max students from">
+    <input type="number" th:field="*{maxStudentsTo}" placeholder="Max students to">
+    <select th:field="*{teacherId}">
+        <option value="">All</option>
+        <option th:each="t : ${teachers}"
+                th:value="${t.id}"
+                th:text="${t.teacherName}">
+        </option>
+    </select>
+    <select th:field="*{sortBy}">
+        <option value="id">ID</option>
+        <option value="courseName">Course name</option>
+        <option value="credits">Credits</option>
+        <option value="maxStudents">Max students</option>
+    </select>
+    <select th:field="*{sortDirection}">
+        <option value="ASC">ASC</option>
+        <option value="DESC">DESC</option>
+    </select>
+    <button type="submit">Filter</button>
+</form>
+
 <h2 th:text="${editMode} ? 'Edit Course' : 'Create Course'">Create Course</h2>
 
-<form th:object="${form}" th:action="${editMode} ? @{/courses/{id}(id=${form.id})} : @{/courses}" method="post">
+<form th:object="${form}" th:action="${editMode} ? @{/manage/courses/{id}(id=${form.id})} : @{/manage/courses}" method="post">
     <input type="hidden" name="_method" value="PUT" th:if="${editMode}"/>
 
     <div>
@@ -62,7 +88,7 @@
 
     <div>
         <button type="submit" th:text="${editMode} ? 'Update' : 'Create'">Create</button>
-        <a th:if="${editMode}" th:href="@{/courses}">Cancel</a>
+        <a th:if="${editMode}" th:href="@{/manage/courses}">Cancel</a>
     </div>
 </form>
 
@@ -80,12 +106,12 @@
     </thead>
 
     <tbody>
-    <tr th:if="${#lists.isEmpty(courses)}">
+    <tr th:if="${#lists.isEmpty(page.content)}">
         <td colspan="5">No courses yet.</td>
     </tr>
 
-    <tr th:each="course : ${courses}">
-        <td><a th:href="@{/courses(id=${course.id})}" th:text="${course.id}">1</a></td>
+    <tr th:each="course : ${page.content}">
+        <td><a th:href="@{/manage/courses(id=${course.id})}" th:text="${course.id}">1</a></td>
         <td th:text="${course.courseName}">Course</td>
         <td th:text="${course.teacher.teacherName}">Teacher</td>
         <td>
@@ -95,7 +121,7 @@
             </ul>
         </td>
         <td>
-            <form th:action="@{/courses/{id}(id=${course.id})}" method="post">
+            <form th:action="@{/manage/courses/{id}(id=${course.id})}" method="post">
                 <input type="hidden" name="_method" value="DELETE"/>
                 <button type="submit">Delete</button>
             </form>
@@ -103,6 +129,10 @@
     </tr>
     </tbody>
 </table>
+
+<a th:if="${page.hasPrevious()}" th:href="@{?page=${page.number-1}}">Previous</a>
+<span th:text="${page.number + 1}"></span>
+<a th:if="${page.hasNext()}" th:href="@{?page=${page.number+1}}">Next</a>
 
 </body>
 </html>

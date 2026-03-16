@@ -20,8 +20,24 @@
 <body>
 <h1>Users</h1>
 
+<form method="get" th:object="${searchForm}">
+    <input type="text" th:field="*{username}" placeholder="Username">
+    <input type="text" th:field="*{email}" placeholder="Email">
+    <select th:field="*{sortBy}">
+        <option value="id">ID</option>
+        <option value="userName">Username</option>
+        <option value="email">Email</option>
+        <option value="createdAt">Created At</option>
+    </select>
+    <select th:field="*{sortDirection}">
+        <option value="ASC">ASC</option>
+        <option value="DESC">DESC</option>
+    </select>
+    <button type="submit">Filter</button>
+</form>
+
 <h2 th:text="${editMode} ? 'Edit User' : 'Create User'">Create User</h2>
-<form th:object="${form}" th:action="${editMode} ? @{/users/{id}(id=${form.id})} : @{/users}" method="post">
+<form th:object="${form}" th:action="${editMode} ? @{/manage/users/{id}(id=${form.id})} : @{/manage/users}" method="post">
     <input type="hidden" name="_method" value="PUT" th:if="${editMode}"/>
 
     <div>
@@ -53,7 +69,7 @@
 
     <div>
         <button type="submit" th:text="${editMode} ? 'Update' : 'Create'">Create</button>
-        <a th:if="${editMode}" th:href="@{/users}">Cancel</a>
+        <a th:if="${editMode}" th:href="@{/manage/users}">Cancel</a>
     </div>
 </form>
 
@@ -69,16 +85,16 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:if="${#lists.isEmpty(users)}">
+    <tr th:if="${#lists.isEmpty(page.content)}">
         <td colspan="5">No users yet.</td>
     </tr>
-    <tr th:each="user : ${users}">
-        <td><a th:href="@{/users(id=${user.id})}" th:text="${user.id}">1</a></td>
+    <tr th:each="user : ${page.content}">
+        <td><a th:href="@{/manage/users(id=${user.id})}" th:text="${user.id}">1</a></td>
         <td th:text="${user.userName}">User Name</td>
         <td th:text="${user.email}">email@example.com</td>
         <td th:text="${user.role}">ADMIN</td>
         <td>
-            <form th:action="@{/users/{id}(id=${user.id})}" method="post">
+            <form th:action="@{/manage/users/{id}(id=${user.id})}" method="post">
                 <input type="hidden" name="_method" value="DELETE"/>
                 <button type="submit">Delete</button>
             </form>
@@ -86,5 +102,9 @@
     </tr>
     </tbody>
 </table>
+
+<a th:if="${page.hasPrevious()}" th:href="@{?page=${page.number-1}}">Previous</a>
+<span th:text="${page.number + 1}"></span>
+<a th:if="${page.hasNext()}" th:href="@{?page=${page.number+1}}">Next</a>
 </body>
 </html>
