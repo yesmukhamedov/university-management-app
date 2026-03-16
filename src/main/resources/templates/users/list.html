@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container py-4">
+    <h1 class="mb-3">Users</h1>
+
+    <form method="get" th:object="${searchForm}" class="row g-2 mb-3">
+        <div class="col-md-3"><input class="form-control" type="text" th:field="*{username}" placeholder="Username"></div>
+        <div class="col-md-3"><input class="form-control" type="text" th:field="*{email}" placeholder="Email"></div>
+        <div class="col-md-2">
+            <select class="form-select" th:field="*{sortBy}">
+                <option value="id">ID</option><option value="userName">Username</option><option value="email">Email</option><option value="createdAt">Created At</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select class="form-select" th:field="*{sortDirection}"><option value="ASC">ASC</option><option value="DESC">DESC</option></select>
+        </div>
+        <div class="col-md-2"><button class="btn btn-primary w-100" type="submit">Search</button></div>
+    </form>
+
+    <table class="table table-striped">
+        <thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th></tr></thead>
+        <tbody>
+        <tr th:each="u : ${page.content}">
+            <td th:text="${u.id}"></td><td th:text="${u.userName}"></td><td th:text="${u.email}"></td><td th:text="${u.role}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="d-flex gap-3 align-items-center">
+        <a class="btn btn-outline-secondary" th:if="${page.hasPrevious()}"
+           th:href="@{/users(page=${page.number-1},size=${page.size},username=${searchForm.username},email=${searchForm.email},sortBy=${searchForm.sortBy},sortDirection=${searchForm.sortDirection})}">Previous</a>
+        <span th:text="${(page.number + 1) + ' / ' + page.totalPages}"></span>
+        <a class="btn btn-outline-secondary" th:if="${page.hasNext()}"
+           th:href="@{/users(page=${page.number+1},size=${page.size},username=${searchForm.username},email=${searchForm.email},sortBy=${searchForm.sortBy},sortDirection=${searchForm.sortDirection})}">Next</a>
+    </div>
+</div>
+</body>
+</html>

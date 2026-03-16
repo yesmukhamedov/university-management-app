@@ -12,7 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/users")
+@RequestMapping("/manage/users")
 @RequiredArgsConstructor
 public class UsersController {
     private final UserService userService;
@@ -34,7 +34,7 @@ public class UsersController {
             return renderFormWithErrors(model, form, false);
         }
         userService.create(form);
-        return "redirect:/users";
+        return "redirect:/manage/users";
     }
 
     @PutMapping("/{id}")
@@ -45,13 +45,13 @@ public class UsersController {
             return renderFormWithErrors(model, form, true);
         }
         userService.update(id, form);
-        return "redirect:/users";
+        return "redirect:/manage/users";
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id) {
         userService.delete(id);
-        return "redirect:/users";
+        return "redirect:/manage/users";
     }
 
     private String renderFormWithErrors(Model model, UserFormDto form, boolean editMode) {

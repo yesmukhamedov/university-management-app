@@ -13,7 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/teachers")
+@RequestMapping("/manage/teachers")
 @RequiredArgsConstructor
 public class TeachersController {
     private final TeacherService teacherService;
@@ -37,7 +37,7 @@ public class TeachersController {
             return renderFormWithErrors(model, form, false);
         }
         teacherService.create(form);
-        return "redirect:/teachers";
+        return "redirect:/manage/teachers";
     }
 
     @PutMapping("/{id}")
@@ -48,13 +48,13 @@ public class TeachersController {
             return renderFormWithErrors(model, form, true);
         }
         teacherService.update(id, form);
-        return "redirect:/teachers";
+        return "redirect:/manage/teachers";
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id) {
         teacherService.delete(id);
-        return "redirect:/teachers";
+        return "redirect:/manage/teachers";
     }
 
     private String renderFormWithErrors(Model model, TeacherFormDto form, boolean editMode) {
