@@ -46,6 +46,7 @@ public class StudentService {
     private final StudentsMyBatisMapper studentsMyBatisMapper;
     private final StudentConverter studentConverter;
 
+    @Transactional(readOnly = true)
     public Page<StudentViewDto> search(StudentSearchForm form, Pageable pageable) {
         String requestedSortBy = form.getSortBy() == null ? DEFAULT_SORT : form.getSortBy();
         String sortBy = SORT_COLUMN_MAPPING.getOrDefault(requestedSortBy, SORT_COLUMN_MAPPING.get(DEFAULT_SORT));
@@ -77,14 +78,17 @@ public class StudentService {
                 .map(studentConverter::toViewDto);
     }
 
+    @Transactional(readOnly = true)
     public List<UserGridDto> findAllUsers() {
         return userRepository.findAll().stream().map(studentConverter::toUserGridDto).toList();
     }
 
+    @Transactional(readOnly = true)
     public List<CourseGridDto> findAllCourses() {
         return courseRepository.findAll().stream().map(studentConverter::toCourseGridDto).toList();
     }
 
+    @Transactional(readOnly = true)
     public StudentFormDto getForm(Long id) {
         return id == null ? new StudentFormDto() : studentConverter.toFormDto(findById(id));
     }
@@ -114,6 +118,7 @@ public class StudentService {
         studentRepository.delete(student);
     }
 
+    @Transactional(readOnly = true)
     public Student findById(Long id) {
         return studentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Student not found with id: " + id));
     }

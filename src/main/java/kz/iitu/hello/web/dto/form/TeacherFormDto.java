@@ -34,5 +34,6 @@ public class TeacherFormDto {
     @NotNull(message = "User is required")
     private Long userId;
 
+    @Size(max = 1000, message = "Too many courses selected")
     private List<Long> courseIds;
 }

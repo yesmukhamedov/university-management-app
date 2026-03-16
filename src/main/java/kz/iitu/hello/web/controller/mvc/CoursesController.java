@@ -1,5 +1,6 @@
 package kz.iitu.hello.web.controller.mvc;
 
+import jakarta.validation.Valid;
 import kz.iitu.hello.service.CourseService;
 import kz.iitu.hello.web.dto.form.CourseFormDto;
 import kz.iitu.hello.web.dto.search.CourseSearchForm;
@@ -20,6 +21,11 @@ public class CoursesController {
     private final CourseService courseService;
     private final CourseFormValidator courseFormValidator;
 
+    @InitBinder("form")
+    public void initBinder(org.springframework.web.bind.WebDataBinder binder) {
+        binder.addValidators(courseFormValidator);
+    }
+
     @GetMapping
     public String read(@RequestParam(name = "id", required = false) Long id,
                        @ModelAttribute("searchForm") CourseSearchForm searchForm,
@@ -32,8 +38,7 @@ public class CoursesController {
     }
 
     @PostMapping
-    public String create(@ModelAttribute("form") CourseFormDto form, BindingResult bindingResult, Model model) {
-        courseFormValidator.validate(form, bindingResult, form.getId());
+    public String create(@Valid @ModelAttribute("form") CourseFormDto form, BindingResult bindingResult, Model model) {
         if (BindingResultValidationUtils.hasErrors(bindingResult)) {
             return renderFormWithErrors(model, form, false);
         }
@@ -42,8 +47,7 @@ public class CoursesController {
     }
 
     @PutMapping("/{id}")
-    public String update(@PathVariable Long id, @ModelAttribute("form") CourseFormDto form, BindingResult bindingResult, Model model) {
-        courseFormValidator.validate(form, bindingResult, form.getId());
+    public String update(@PathVariable Long id, @Valid @ModelAttribute("form") CourseFormDto form, BindingResult bindingResult, Model model) {
         if (BindingResultValidationUtils.hasErrors(bindingResult)) {
             form.setId(id);
             return renderFormWithErrors(model, form, true);
