@@ -116,7 +116,7 @@
     <tr th:each="course : ${page.content}">
         <td><a th:href="@{/manage/courses(id=${course.id})}" th:text="${course.id}">1</a></td>
         <td th:text="${course.courseName}">Course</td>
-        <td th:text="${course.teacher.teacherName}">Teacher</td>
+        <td th:text="${course.teacher != null ? course.teacher.teacherName : '-'}">Teacher</td>
         <td th:text="${course.credits}">0</td>
         <td th:text="${course.maxStudents}">0</td>
         <td th:text="${#lists.size(course.students)}">0</td>
