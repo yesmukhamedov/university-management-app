@@ -40,6 +40,11 @@ public class UserService {
 
         Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(direction, sortBy));
 
+        if(roleFilter == null)
+            return usersRepository
+                    .findByUserNameContainingIgnoreCaseAndEmailContainingIgnoreCase(userNameFilter, emailFilter, sortedPageable)
+                    .map(userConverter::toGridDto);
+
         return usersRepository
                 .findByUserNameContainingIgnoreCaseAndEmailContainingIgnoreCaseAndRole(userNameFilter, emailFilter, roleFilter, sortedPageable)
                 .map(userConverter::toGridDto);
