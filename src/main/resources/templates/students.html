@@ -100,6 +100,9 @@
         <a th:if="${editMode}" th:href="@{/students}">Cancel</a>
     </div>
 </form>
+<div th:if="${param.error == 'access_denied'}" style="color:#b00020; margin-top:8px;">
+    Access denied. You are not authorized to perform this action.
+</div>
 
 <h2>Students</h2>
 
