@@ -15,10 +15,26 @@
         .form-row input, .form-row select { min-width: 160px; }
         .form-actions { margin-top: 8px; }
         .form-actions a { margin-left: 8px; font-size: 0.9em; }
+        .auth-panel { border: 1px solid #ccc; padding: 12px; margin-bottom: 16px; max-width: 520px; }
+        .error-message { color: #b00020; margin-top: 8px; }
+        .auth-status { margin-top: 8px; font-size: 0.9em; color: #555; }
     </style>
 </head>
 <body>
 <h1>Users</h1>
+
+<div class="auth-panel">
+    <h3>Authentication</h3>
+    <form id="loginForm">
+        <label for="authUsername">Username</label>
+        <input id="authUsername" name="username" type="text" required>
+        <label for="authPassword">Password</label>
+        <input id="authPassword" name="password" type="password" required>
+        <button type="submit">Login</button>
+    </form>
+    <button type="button" id="logoutButton">Logout</button>
+    <div id="authStatus" class="auth-status"></div>
+</div>
 
 <form method="get" th:object="${searchForm}">
     <label for="username">Username</label>
@@ -85,6 +101,9 @@
         <a th:if="${editMode}" th:href="@{/users}">Cancel</a>
     </div>
 </form>
+<div class="error-message" th:if="${param.error == 'access_denied'}">
+    Access denied. You are not authorized to perform this action.
+</div>
 
 <h2>Users</h2>
 <table>
@@ -119,5 +138,87 @@
 <a th:if="${page.hasPrevious()}" th:href="@{/users(page=${page.number-1},username=${searchForm.username},email=${searchForm.email},role=${searchForm.role},sortBy=${searchForm.sortBy},sortDirection=${searchForm.sortDirection})}">Previous</a>
 <span th:text="${page.number + 1}"></span>
 <a th:if="${page.hasNext()}" th:href="@{/users(page=${page.number+1},username=${searchForm.username},email=${searchForm.email},role=${searchForm.role},sortBy=${searchForm.sortBy},sortDirection=${searchForm.sortDirection})}">Next</a>
+<script>
+    (function () {
+        const TOKEN_KEY = "jwtToken";
+        const loginForm = document.getElementById("loginForm");
+        const logoutButton = document.getElementById("logoutButton");
+        const authStatus = document.getElementById("authStatus");
+        const nativeFetch = window.fetch.bind(window);
+
+        function getToken() {
+            return localStorage.getItem(TOKEN_KEY);
+        }
+
+        function updateAuthStatus() {
+            authStatus.textContent = getToken() ? "Logged in (token saved)." : "Not logged in.";
+        }
+
+        window.fetch = function (input, init) {
+            const config = init || {};
+            const headers = new Headers(config.headers || {});
+            const token = getToken();
+
+            if (token && !headers.has("Authorization")) {
+                headers.set("Authorization", "Bearer " + token);
+            }
+
+            return nativeFetch(input, Object.assign({}, config, { headers }));
+        };
+
+        loginForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+            const username = document.getElementById("authUsername").value;
+            const password = document.getElementById("authPassword").value;
+
+            const response = await nativeFetch("/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password })
+            });
+
+            if (!response.ok) {
+                authStatus.textContent = "Login failed.";
+                return;
+            }
+
+            const data = await response.json();
+            localStorage.setItem(TOKEN_KEY, data.token);
+            updateAuthStatus();
+        });
+
+        logoutButton.addEventListener("click", function () {
+            localStorage.removeItem(TOKEN_KEY);
+            updateAuthStatus();
+        });
+
+        document.addEventListener("submit", async function (event) {
+            const form = event.target;
+            if (!(form instanceof HTMLFormElement) || form.id === "loginForm") {
+                return;
+            }
+
+            const method = (form.method || "GET").toUpperCase();
+            if (method === "GET") {
+                return;
+            }
+
+            event.preventDefault();
+            const response = await fetch(form.action, {
+                method: method,
+                body: new FormData(form),
+                redirect: "follow"
+            });
+
+            if (response.redirected) {
+                window.location.href = response.url;
+            } else {
+                window.location.reload();
+            }
+        });
+
+        updateAuthStatus();
+    })();
+</script>
 </body>
 </html>
