@@ -15,11 +15,15 @@
         .form-row input, .form-row select { min-width: 160px; }
         .form-actions { margin-top: 8px; }
         .form-actions a { margin-left: 8px; font-size: 0.9em; }
+        .auth-panel { border: 1px solid #ccc; padding: 12px; margin-bottom: 16px; max-width: 520px; }
+        .auth-status { margin-top: 8px; font-size: 0.9em; color: #555; }
     </style>
 </head>
 <body>
 
 <h1>Teachers</h1>
+
+<div th:replace="~{fragments/auth :: authPanel}"></div>
 
 <form method="get" th:object="${searchForm}">
     <label for="name">Name</label>
@@ -148,5 +152,6 @@
 <span th:text="${page.number + 1}"></span>
 <a th:if="${page.hasNext()}" th:href="@{/teachers(page=${page.number+1})}">Next</a>
 
+<script th:replace="~{fragments/auth :: authScript}"></script>
 </body>
 </html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="authPanel" class="auth-panel">
+    <h3>Authentication</h3>
+    <form id="loginForm">
+        <label for="authUsername">Username</label>
+        <input id="authUsername" name="username" type="text" required>
+        <label for="authPassword">Password</label>
+        <input id="authPassword" name="password" type="password" required>
+        <button type="submit">Login</button>
+    </form>
+    <button type="button" id="logoutButton">Logout</button>
+    <div id="authStatus" class="auth-status"></div>
+</div>
+
+<script th:fragment="authScript">
+    (function () {
+        const TOKEN_KEY = "jwtToken";
+        const nativeFetch = window.fetch.bind(window);
+
+        function getToken() {
+            return localStorage.getItem(TOKEN_KEY);
+        }
+
+        function updateAuthStatus() {
+            const authStatus = document.getElementById("authStatus");
+            if (authStatus) {
+                authStatus.textContent = getToken() ? "Logged in (token saved)." : "Not logged in.";
+            }
+        }
+
+        window.fetch = function (input, init) {
+            const config = init || {};
+            const headers = new Headers(config.headers || {});
+            const token = getToken();
+
+            if (token && !headers.has("Authorization")) {
+                headers.set("Authorization", "Bearer " + token);
+            }
+
+            return nativeFetch(input, Object.assign({}, config, {headers}));
+        };
+
+        document.addEventListener("submit", async function (event) {
+            const form = event.target;
+            if (!(form instanceof HTMLFormElement)) {
+                return;
+            }
+
+            if (form.id === "loginForm") {
+                event.preventDefault();
+
+                const usernameInput = document.getElementById("authUsername");
+                const passwordInput = document.getElementById("authPassword");
+                const username = usernameInput ? usernameInput.value : "";
+                const password = passwordInput ? passwordInput.value : "";
+
+                const response = await fetch("/auth/login", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({username, password})
+                });
+
+                if (!response.ok) {
+                    updateAuthStatus();
+                    const authStatus = document.getElementById("authStatus");
+                    if (authStatus) {
+                        authStatus.textContent = "Login failed.";
+                    }
+                    return;
+                }
+
+                const data = await response.json();
+                localStorage.setItem(TOKEN_KEY, data.token);
+                window.location.reload();
+                return;
+            }
+
+            const method = (form.getAttribute("method") || "GET").toUpperCase();
+            if (method === "GET") {
+                return;
+            }
+
+            event.preventDefault();
+            const formData = new FormData(form);
+            const body = new URLSearchParams();
+            formData.forEach((value, key) => {
+                body.append(key, value);
+            });
+
+            const response = await fetch(form.action, {
+                method: method,
+                headers: {"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"},
+                body: body.toString(),
+                redirect: "follow"
+            });
+
+            if (response.redirected) {
+                window.location.href = response.url;
+            } else {
+                window.location.reload();
+            }
+        });
+
+        document.addEventListener("click", function (event) {
+            const target = event.target;
+            if (!(target instanceof HTMLElement) || target.id !== "logoutButton") {
+                return;
+            }
+
+            localStorage.removeItem(TOKEN_KEY);
+            window.location.reload();
+        });
+
+        updateAuthStatus();
+    })();
+</script>
+</body>
+</html>
