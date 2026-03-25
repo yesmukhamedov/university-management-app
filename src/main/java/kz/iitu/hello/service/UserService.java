@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,7 @@ public class UserService {
 
     private final UsersRepository usersRepository;
     private final UserConverter userConverter;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     public Page<UserGridDto> search(UserSearchForm form, Pageable pageable) {
@@ -58,12 +60,16 @@ public class UserService {
     public void create(UserFormDto form) {
         User user = new User();
         userConverter.applyFormToEntity(form, user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         usersRepository.save(user);
     }
 
     public void update(Long id, UserFormDto form) {
         User user = findById(id);
         userConverter.applyFormToEntity(form, user);
+        if (form.getPassword() != null && !form.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(form.getPassword()));
+        }
         usersRepository.save(user);
     }
 
