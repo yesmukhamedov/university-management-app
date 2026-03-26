@@ -60,21 +60,15 @@ public class UserService {
     public void create(UserFormDto form) {
         User user = new User();
         userConverter.applyFormToEntity(form, user);
-        if (user.getPassword() != null && !user.getPassword().isBlank()) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (form.getPassword() != null && !form.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(form.getPassword()));
         }
         usersRepository.save(user);
     }
 
     public void update(Long id, UserFormDto form) {
         User user = findById(id);
-        String existingPassword = user.getPassword();
         userConverter.applyFormToEntity(form, user);
-        if (form.getPassword() != null && !form.getPassword().isBlank()) {
-            user.setPassword(passwordEncoder.encode(form.getPassword()));
-        } else {
-            user.setPassword(existingPassword);
-        }
         usersRepository.save(user);
     }
 

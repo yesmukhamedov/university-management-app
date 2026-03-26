@@ -25,7 +25,7 @@ public class UserFormValidator {
         }
         if (currentId == null && (form.getPassword() == null || form.getPassword().isBlank())) {
             bindingResult.rejectValue("password", "password.blank", "Password is required");
-        } else if (form.getPassword() != null && !form.getPassword().isBlank() && form.getPassword().length() < 6) {
+        } else if (currentId == null && form.getPassword() != null && !form.getPassword().isBlank() && form.getPassword().length() < 6) {
             bindingResult.rejectValue("password", "password.length", "Password must be at least 6 characters");
         }
         if (form.getRole() == null) {
