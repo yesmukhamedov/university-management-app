@@ -5,10 +5,14 @@ import kz.iitu.hello.domain.enums.UserRole;
 import kz.iitu.hello.domain.repository.UsersRepository;
 import kz.iitu.hello.security.JwtUtil;
 import kz.iitu.hello.web.dto.auth.AuthResponse;
+import kz.iitu.hello.web.dto.auth.ChangePasswordRequest;
 import kz.iitu.hello.web.dto.auth.LoginRequest;
 import kz.iitu.hello.web.dto.auth.RegisterRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -53,5 +57,21 @@ public class AuthController {
 
         String token = jwtUtil.generateToken(user.getUserName());
         return new AuthResponse(token);
+    }
+
+    @PatchMapping("/change-password")
+    public void changePassword(@Valid @RequestBody ChangePasswordRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        User user = usersRepository.findByUserName(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Old password is invalid");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        usersRepository.save(user);
     }
 }

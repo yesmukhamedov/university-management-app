@@ -11,9 +11,6 @@ public class UserConverter {
     public void applyFormToEntity(UserFormDto form, User user) {
         user.setUserName(form.getUserName());
         user.setEmail(form.getEmail());
-        if (form.getPassword() != null && !form.getPassword().isBlank()) {
-            user.setPassword(form.getPassword());
-        }
         user.setRole(form.getRole());
     }
 
