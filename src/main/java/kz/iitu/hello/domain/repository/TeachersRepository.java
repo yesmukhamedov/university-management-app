@@ -5,6 +5,8 @@ import kz.iitu.hello.domain.enums.Department;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -19,4 +21,6 @@ public interface TeachersRepository extends JpaRepository<Teacher, Long> {
     Page<Teacher> searchTeachers(@Param("department") Department department,
                                  @Param("name") String name,
                                  Pageable pageable);
+
+    Optional<Teacher> findByUserId(Long userId);
 }

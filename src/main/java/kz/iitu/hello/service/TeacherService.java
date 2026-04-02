@@ -91,6 +91,12 @@ public class TeacherService {
         return teachersRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Teacher not found with id: " + id));
     }
 
+    @Transactional(readOnly = true)
+    public Teacher findByUserId(Long userId) {
+        return teachersRepository.findByUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Teacher not found for user id: " + userId));
+    }
+
     private void applyForm(TeacherFormDto form, Teacher teacher) {
         User user = usersRepository.findById(form.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + form.getUserId()));

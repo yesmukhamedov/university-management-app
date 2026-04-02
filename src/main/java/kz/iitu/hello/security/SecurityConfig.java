@@ -30,6 +30,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.PATCH, "/auth/change-password").authenticated()
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/profiles/**", "/api/profiles/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/**").permitAll()
                         .anyRequest().authenticated()
                 )
