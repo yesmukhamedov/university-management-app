@@ -8,6 +8,8 @@ import kz.iitu.hello.web.dto.auth.AuthResponse;
 import kz.iitu.hello.web.dto.auth.ChangePasswordRequest;
 import kz.iitu.hello.web.dto.auth.LoginRequest;
 import kz.iitu.hello.web.dto.auth.RegisterRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Tag(name = "Authentication", description = "Login, registration, and password management")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -30,6 +33,7 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
+    @Operation(summary = "Login", description = "Authenticate user and return JWT token")
     public AuthResponse login(@RequestBody LoginRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
@@ -43,6 +47,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    @Operation(summary = "Register", description = "Register a new user account (assigned GUEST role)")
     public AuthResponse register(@RequestBody RegisterRequest request) {
         if (usersRepository.findByUserName(request.getUsername()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
@@ -61,6 +66,7 @@ public class AuthController {
     }
 
     @PatchMapping("/change-password")
+    @Operation(summary = "Change password", description = "Change password for the currently authenticated user")
     public void changePassword(@Valid @RequestBody ChangePasswordRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
