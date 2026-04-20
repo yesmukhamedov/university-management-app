@@ -14,7 +14,7 @@
     </style>
 </head>
 <body>
-<button id="logoutButton" onclick="localStorage.removeItem('jwtToken'); window.location.href='/auth';" style="position:fixed;top:16px;right:16px;padding:6px 18px;background:#e53935;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:0.95em;z-index:1000;">Log Out</button>
+<button id="logoutButton" onclick="localStorage.removeItem('jwtToken'); document.cookie='jwtToken=; path=/; max-age=0'; window.location.href='/public';" style="position:fixed;top:16px;right:16px;padding:6px 18px;background:#e53935;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:0.95em;z-index:1000;">Log Out</button>
 
 <h1>User Profile</h1>
 

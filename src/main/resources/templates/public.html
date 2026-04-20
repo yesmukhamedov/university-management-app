@@ -134,14 +134,15 @@
 
         const data = await response.json();
         localStorage.setItem('jwtToken', data.token);
+        document.cookie = 'jwtToken=' + data.token + '; path=/; SameSite=Lax';
 
         if (data.role === 'ADMIN') {
             window.location.href = '/users';
         } else if (data.role === 'STUDENT' || data.role === 'TEACHER') {
             window.location.href = '/profiles/' + data.userId;
         } else {
-            msgEl.className = 'msg error';
-            msgEl.textContent = 'Access restricted for your role.';
+            msgEl.className = 'msg success';
+            msgEl.textContent = 'Signed in as GUEST. No additional pages available.';
         }
     });
 
